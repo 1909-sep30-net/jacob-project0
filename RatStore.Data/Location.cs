@@ -12,7 +12,7 @@ namespace RatStore.Data
 
         public Dictionary<Component, int> Inventory { get; set; }
 
-        public List<Product> AvailableProducts { get; }
+        public List<Product> AvailableProducts { get; protected set; }
 
         public List<Order> OrderHistory { get; set; }
     }

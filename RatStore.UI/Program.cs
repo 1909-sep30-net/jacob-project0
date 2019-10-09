@@ -1,4 +1,5 @@
 ﻿using System;
+using RatStore.Logic;
 
 namespace RatStore.UI
 {
@@ -9,16 +10,21 @@ namespace RatStore.UI
             int currentStoreId = 1;
             string name = "Jacob";
 
-            Console.WriteLine("Welcome to the Rat Company!");
-            Console.WriteLine($"You are now logged in as {name}.");
-            Console.WriteLine($"You are currently in store {currentStoreId}");
-            Console.WriteLine("");
+            PrintWelcomeMessage(name, currentStoreId);
 
             Console.WriteLine($"Currently, we have the following products in stock: ");
             PrintAvailableProducts(currentStoreId);
             PrintMenu(currentStoreId);
 
             string s = Console.ReadLine();
+        }
+
+        static void PrintWelcomeMessage(string name, int storeId)
+        {
+            Console.WriteLine("Welcome to the Rat Company!");
+            Console.WriteLine($"You are now logged in as {name}.");
+            Console.WriteLine($"You are currently in store {storeId}");
+            Console.WriteLine("");
         }
 
         static void PrintAvailableProducts(int storeId)

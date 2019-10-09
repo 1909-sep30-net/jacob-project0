@@ -16,7 +16,7 @@ namespace RatStore.Data
         public List<Component> Components { get; private set; }
         public List<Order> Orders { get; private set; }
 
-        public void InitializeTextStore()
+        public TextStore()
         {
             _path = "";
 
@@ -31,8 +31,16 @@ namespace RatStore.Data
             Recipes = new List<Recipe>();
             Components = new List<Component>();
             Orders = new List<Order>();
+
+            LoadStores();
         }
 
+        ~TextStore()
+        {
+            SaveStores();
+        }
+
+        #region Storage
         public void LoadStores()
         {
             try
@@ -73,6 +81,7 @@ namespace RatStore.Data
                 // TODO: logging
             }
         }
+        #endregion
 
         #region Customer
         public void AddCustomer(Customer customer)

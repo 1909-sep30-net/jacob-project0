@@ -3,13 +3,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29326.143
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RatStore.Logic", "RatStore.Logic\RatStore.Logic.csproj", "{BC10E788-3978-4EDB-B102-15C936A53415}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RatStore.Logic", "RatStore.Logic\RatStore.Logic.csproj", "{BC10E788-3978-4EDB-B102-15C936A53415}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RatStore.UI", "RatStore.UI\RatStore.UI.csproj", "{163457B1-0537-4709-81EC-D4124E4E5640}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RatStore.UI", "RatStore.UI\RatStore.UI.csproj", "{163457B1-0537-4709-81EC-D4124E4E5640}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7240AEA3-BEB6-4DB2-B998-10E65E6E9206} = {7240AEA3-BEB6-4DB2-B998-10E65E6E9206}
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RatStore.Data", "RatStore.Data\RatStore.Data.csproj", "{7240AEA3-BEB6-4DB2-B998-10E65E6E9206}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RatStore.Data", "RatStore.Data\RatStore.Data.csproj", "{7240AEA3-BEB6-4DB2-B998-10E65E6E9206}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RatStore.Test", "RatStore.Test\RatStore.Test.csproj", "{6BC053C1-CDF2-4650-AF7C-DDD5F1DD11A1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RatStore.Test", "RatStore.Test\RatStore.Test.csproj", "{6BC053C1-CDF2-4650-AF7C-DDD5F1DD11A1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

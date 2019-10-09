@@ -19,6 +19,11 @@ namespace RatStore.Data
 
     public class Product
     {
+        public Product(Recipe recipe)
+        {
+            Recipe = recipe;
+        }
+
         public Recipe Recipe { get; set; }
 
         public double Cost 
