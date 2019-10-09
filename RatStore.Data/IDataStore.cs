@@ -8,7 +8,8 @@ namespace RatStore.Data
     {
         #region Customer
         void AddCustomer(Customer customer);
-        List<Customer> TryGetCustomerByName(string name);
+        void AddCustomer(string firstName, string middleName, string lastName, string phoneNumber);
+        Customer TryGetCustomerByNameAndPhone(string firstName, string lastName, string phoneNumber);
         Customer TryGetCustomerById(int id);
         List<Customer> GetAllCustomers();
         int GetNextCustomerId();

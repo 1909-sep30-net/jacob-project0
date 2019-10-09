@@ -88,18 +88,27 @@ namespace RatStore.Data
         {
             Customers.Add(customer);
         }
-        public List<Customer> TryGetCustomerByName(string name)
+        public void AddCustomer(string firstName, string middleName, string lastName, string phoneNumber)
         {
-            /* There is a many-to-one relationship between names and customers,
-            so we return a list */
-            List<Customer> ret = Customers.Where(
-                (Customer c) => 
-                { 
-                    return (c.FirstName + " " + c.MiddleName + " " + c.LastName).Contains(name); 
-                }
-            ).ToList();
+            Customer customer = new Customer()
+            {
+                FirstName = firstName,
+                MiddleName = middleName,
+                LastName = lastName,
+                PhoneNumber = phoneNumber,
+                Id = Customers.Count,
+                PreferredStoreId = 0
+            };
+        }
+        public Customer TryGetCustomerByNameAndPhone(string firstName, string lastName, string phoneNumber)
+        {
+            foreach (Customer c in Customers)
+            {
+                if (c.FirstName == firstName && c.LastName == lastName && c.PhoneNumber == phoneNumber)
+                    return c;
+            }
 
-            return ret;
+            throw new Exception($"No customer named {firstName} {lastName} with phone number {phoneNumber}");
         }
         public Customer TryGetCustomerById(int id)
         {

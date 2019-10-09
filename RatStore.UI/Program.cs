@@ -7,41 +7,89 @@ namespace RatStore.UI
     {
         static void Main(string[] args)
         {
-            int currentStoreId = 1;
-            string name = "Jacob";
+            Navigator nav = new Navigator();
+            nav.CurrentStore = new Logic.RatStore();
 
-            PrintWelcomeMessage(name, currentStoreId);
+            Console.WriteLine("Welcome to the Rat Company! We sell rats and rat accessories.");
 
-            Console.WriteLine($"Currently, we have the following products in stock: ");
-            PrintAvailableProducts(currentStoreId);
-            PrintMenu(currentStoreId);
-
-            string s = Console.ReadLine();
+            LogInCustomer(ref nav);
         }
 
-        static void PrintWelcomeMessage(string name, int storeId)
+        static void LogInCustomer(ref Navigator nav)
         {
-            Console.WriteLine("Welcome to the Rat Company!");
-            Console.WriteLine($"You are now logged in as {name}.");
-            Console.WriteLine($"You are currently in store {storeId}");
-            Console.WriteLine("");
+            string[] names;
+            string firstName, middleName, lastName;
+            string phoneNumber;
+
+            while (true)
+            {
+                while (true)
+                {
+                    Console.Write("Please enter your full name: ");
+
+                    names = Console.ReadLine().Split(' ');
+
+                    if (names.Length < 2)
+                    {
+                        Console.WriteLine("Please enter at least your first and last name.");
+                        continue;
+                    }
+
+                    break;
+                }
+
+                while (true)
+                {
+                    Console.Write("Please enter your phone number in the format 1112223333 or 2223333:");
+
+                    phoneNumber = Console.ReadLine();
+                    int throwAway;
+
+                    if (!int.TryParse(phoneNumber, out throwAway))
+                    {
+                        Console.WriteLine("Please enter numbers only.");
+                        continue;
+                    }
+
+                    break;
+                }
+
+                firstName = names[0];
+                if (names.Length == 2)
+                {
+                    middleName = "";
+                    lastName = names[1];
+                }
+                else
+                {
+                    middleName = names[1];
+                    lastName = names[2];
+                }
+
+                try
+                {
+                    nav.CurrentCustomer = nav.CurrentStore.DataStore.TryGetCustomerByNameAndPhone(firstName, lastName, phoneNumber);
+                    Console.WriteLine($"Welcome back, {nav.CurrentCustomer.FirstName}!");
+                }
+                catch (Exception e)
+                {
+                    Console.Write($"Your name is {firstName} {lastName} and your number is {phoneNumber}. Is this correct? (y/n)");
+                    if (Console.ReadKey().KeyChar != 'y')
+                        continue;
+
+
+                    nav.CurrentStore.DataStore.AddCustomer(firstName, middleName, lastName, phoneNumber);
+
+                    Console.WriteLine("New customer added.");
+                }
+
+                break;
+            }
         }
 
-        static void PrintAvailableProducts(int storeId)
+        static void MainMenu(ref Navigator nav)
         {
-            Console.WriteLine("1 - BigRat x 6");
-            Console.WriteLine("2 - FatRat x 1");
-            Console.WriteLine("3 - RatFood x 7");
-            Console.WriteLine("4 - BigRatCage x 1");
-            Console.WriteLine("");
-        }
-
-        static void PrintMenu(int storeId)
-        {
-            Console.WriteLine("What would you like to do?");
-            Console.WriteLine("1: submit and order to this location");
-            Console.WriteLine("2: change locations");
-            Console.WriteLine("3: log out");
+            
         }
     }
 }
