@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace RatStore.Logic
+namespace RatStore.UI
 {
-    class Order
+    class CommandParser
     {
+
     }
 }

@@ -2,16 +2,18 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace RatStore.Logic
+namespace RatStore.Data
 {
-    class Location
+    public class Location
     {
         public string Address { get; set; }
+
+        public int Id { get; set; }
 
         public Dictionary<Component, int> Inventory { get; set; }
 
         public List<Product> AvailableProducts { get; }
 
-        public int Id { get; set; }
+        public List<Order> OrderHistory { get; set; }
     }
 }
