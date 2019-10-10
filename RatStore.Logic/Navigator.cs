@@ -11,10 +11,11 @@ namespace RatStore.Logic
 
         public Customer CurrentCustomer { get; set; }
 
+        public Dictionary<Product, int> Cart { get; set; }
+
         public void TryGoToStore(int targetStoreId)
         {
             CurrentStore.TryChangeLocation(targetStoreId);
         }
-
     }
 }

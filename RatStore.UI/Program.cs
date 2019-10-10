@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using RatStore.Logic;
 
 namespace RatStore.UI
@@ -135,6 +136,21 @@ namespace RatStore.UI
             Console.WriteLine("  2 - Get information");
             Console.WriteLine("  3 - Change locations");
             Console.WriteLine("  0 - Log out");
+        }
+
+        static void Order(ref Navigator nav)
+        {
+            Dictionary<int, int> cart = new Dictionary<int, int>();
+        }
+
+        static void Information(Navigator nav)
+        {
+
+        }
+
+        static void ChangeLocation(ref Navigator nav)
+        {
+
         }
     }
 }
