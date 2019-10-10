@@ -6,6 +6,10 @@ namespace RatStore.Data
 {
     public interface IDataStore
     {
+        void Initialize();
+
+        void Cleanup();
+
         #region Customer
         void AddCustomer(Customer customer);
         void AddCustomer(string firstName, string middleName, string lastName, string phoneNumber);

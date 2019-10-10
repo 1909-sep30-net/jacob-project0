@@ -10,9 +10,45 @@ namespace RatStore.UI
             Navigator nav = new Navigator();
             nav.CurrentStore = new Logic.RatStore();
 
-            Console.WriteLine("Welcome to the Rat Company! We sell rats and rat accessories.");
+            bool loggedIn = false;
 
-            LogInCustomer(ref nav);
+            while (true)
+            {
+                Console.WriteLine("Welcome to the Rat Company! We sell rats and rat accessories.");
+
+                LogInCustomer(ref nav);
+                loggedIn = true;
+
+                while (loggedIn)
+                {
+                    MainMenu(nav);
+
+                    char option = Console.ReadKey().KeyChar;
+                    Console.WriteLine("");
+
+                    switch (option)
+                    {
+                        case '1':
+                            // Order submenu
+                            break;
+                        case '2':
+                            // Information submenu
+                            break;
+                        case '3':
+                            // Change locations submenu
+                            break;
+                        case '0':
+                            Console.WriteLine("Logging out...");
+                            loggedIn = false;
+                            break;
+                        default:
+                            Console.WriteLine("Please choose a given number!");
+                            break;
+                    }
+                }
+
+            nav.CurrentStore.DataStore.Cleanup();
+            }
         }
 
         static void LogInCustomer(ref Navigator nav)
@@ -43,9 +79,11 @@ namespace RatStore.UI
                     Console.Write("Please enter your phone number in the format 1112223333 or 2223333:");
 
                     phoneNumber = Console.ReadLine();
-                    int throwAway;
+                    Console.WriteLine("");
 
-                    if (!int.TryParse(phoneNumber, out throwAway))
+                    Int64 throwAway;
+
+                    if (!Int64.TryParse(phoneNumber, out throwAway))
                     {
                         Console.WriteLine("Please enter numbers only.");
                         continue;
@@ -73,13 +111,15 @@ namespace RatStore.UI
                 }
                 catch (Exception e)
                 {
-                    Console.Write($"Your name is {firstName} {lastName} and your number is {phoneNumber}. Is this correct? (y/n)");
+                    Console.Write($"Your name is {firstName} {lastName} and your number is {phoneNumber}. Is this correct? (y/n) ");
                     if (Console.ReadKey().KeyChar != 'y')
                         continue;
 
 
                     nav.CurrentStore.DataStore.AddCustomer(firstName, middleName, lastName, phoneNumber);
+                    nav.CurrentCustomer = nav.CurrentStore.DataStore.TryGetCustomerByNameAndPhone(firstName, lastName, phoneNumber);
 
+                    Console.WriteLine("");
                     Console.WriteLine("New customer added.");
                 }
 
@@ -87,9 +127,14 @@ namespace RatStore.UI
             }
         }
 
-        static void MainMenu(ref Navigator nav)
+        static void MainMenu(Navigator nav)
         {
-            
+            Console.WriteLine($"  Logged in as {nav.CurrentCustomer.FirstName} {nav.CurrentCustomer.LastName}.");
+            Console.WriteLine("  Main Menu:");
+            Console.WriteLine("  1 - Order from this store");
+            Console.WriteLine("  2 - Get information");
+            Console.WriteLine("  3 - Change locations");
+            Console.WriteLine("  0 - Log out");
         }
     }
 }

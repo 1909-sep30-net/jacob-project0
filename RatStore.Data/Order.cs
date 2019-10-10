@@ -15,5 +15,19 @@ namespace RatStore.Data
         public int OrderId { get; set; }
         public DateTime OrderTimestamp { get; set; }
         public Dictionary<Product, int> OrderProducts { get; set; }
+
+        public double Const 
+        { 
+            get
+            {
+                double sum = 0;
+                foreach (Product product in OrderProducts.Keys)
+                {
+                    sum += product.Cost * OrderProducts[product];
+                }
+
+                return sum;
+            }
+        }
     }
 }

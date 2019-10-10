@@ -12,8 +12,20 @@ namespace RatStore.Logic
             //TODO: text mode vs sql mode
 
             DataStore = new TextStore();
+            DataStore.Initialize();
 
-            TryChangeLocation(0);
+            try
+            {
+                TryChangeLocation(0);
+            }
+            catch
+            {
+                // Add test location if none available
+                Address = "123 Test St, Everett, WA 98203";
+                Id = 0;
+                DataStore.AddLocation(this);
+                TryChangeLocation(0);
+            }
         }
 
         #region Validation

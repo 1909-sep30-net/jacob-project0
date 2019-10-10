@@ -16,9 +16,9 @@ namespace RatStore.Data
         public List<Component> Components { get; private set; }
         public List<Order> Orders { get; private set; }
 
-        public TextStore()
+        public void Initialize()
         {
-            _path = "";
+            _path = "C:\\Users\\Jacob Davis\\Revature\\jacob-project0\\";
 
             _customersFile = _path + "Customers.json";
             _locationsFile = _path + "Locations.json";
@@ -35,7 +35,7 @@ namespace RatStore.Data
             LoadStores();
         }
 
-        ~TextStore()
+        public void Cleanup()
         {
             SaveStores();
         }
@@ -72,7 +72,7 @@ namespace RatStore.Data
             {
                 System.IO.File.WriteAllText(_customersFile, JsonConvert.SerializeObject(Customers));
                 System.IO.File.WriteAllText(_locationsFile, JsonConvert.SerializeObject(Locations));
-                System.IO.File.WriteAllText(_recipesFile, JsonConvert.SerializeObject(_recipesFile));
+                System.IO.File.WriteAllText(_recipesFile, JsonConvert.SerializeObject(Recipes));
                 System.IO.File.WriteAllText(_componentsFile, JsonConvert.SerializeObject(Components));
                 System.IO.File.WriteAllText(_ordersFile, JsonConvert.SerializeObject(Orders));
             }
@@ -99,6 +99,8 @@ namespace RatStore.Data
                 Id = Customers.Count,
                 PreferredStoreId = 0
             };
+
+            Customers.Add(customer);
         }
         public Customer TryGetCustomerByNameAndPhone(string firstName, string lastName, string phoneNumber)
         {
