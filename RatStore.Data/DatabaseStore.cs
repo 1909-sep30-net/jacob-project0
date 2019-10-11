@@ -4,7 +4,7 @@ using System.Text;
 
 namespace RatStore.Data
 {
-    class DatabaseStore //: IDataStore
+    class DatabaseStore : IDataStore
     {
 
     }
