@@ -5,47 +5,30 @@ using System.Text;
 
 namespace RatStore.Data
 {
-    public struct Component
-    {
-        public double Cost { get; set; }
-        public string Name { get; set; }
-    }
-
-    public struct Recipe
-    {
-        public string EndProductName { get; set; }
-        public Dictionary<Component, int> Ingredients { get; set; }
-    }
-
     public class Product
     {
-        public Product(Recipe recipe)
+        public Product(string name, Dictionary<Component, int> ingredients)
         {
-            Recipe = recipe;
+            Name = name;
+            Ingredients = ingredients;
         }
 
-        public Recipe Recipe { get; set; }
+        public Dictionary<Component, int> Ingredients { get; set; }
 
         public double Cost 
         { 
             get
             {
                 double sum = 0;
-                foreach (Component c in Recipe.Ingredients.Keys)
+                foreach (Component c in Ingredients.Keys)
                 {
-                    sum += c.Cost*Recipe.Ingredients[c];
+                    sum += c.Cost*Ingredients[c];
                 }
 
                 return sum;
             }
         }
 
-        public string Name
-        {
-            get
-            {
-                return Recipe.EndProductName;
-            }
-        }
+        public string Name { get; set; }
     }
 }

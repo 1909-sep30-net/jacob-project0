@@ -9,10 +9,10 @@ namespace RatStore.Data
 {
     public class TextStore : IDataStore
     {
-        string _path, _customersFile, _locationsFile, _recipesFile, _componentsFile, _ordersFile;
+        string _path, _customersFile, _locationsFile, _productsFile, _componentsFile, _ordersFile;
         public List<Customer> Customers { get; private set; }
         public List<Location> Locations { get; private set; }
-        public List<Recipe> Recipes { get; private set; }
+        public List<Product> Products { get; private set; }
         public List<Component> Components { get; private set; }
         public List<Order> Orders { get; private set; }
 
@@ -22,13 +22,13 @@ namespace RatStore.Data
 
             _customersFile = _path + "Customers.json";
             _locationsFile = _path + "Locations.json";
-            _recipesFile = _path + "Recipes.json";
+            _productsFile = _path + "Recipes.json";
             _componentsFile = _path + "Components.json";
             _ordersFile = _path + "Orders.json";
 
             Customers = new List<Customer>();
             Locations = new List<Location>();
-            Recipes = new List<Recipe>();
+            Products = new List<Product>();
             Components = new List<Component>();
             Orders = new List<Order>();
 
@@ -51,8 +51,8 @@ namespace RatStore.Data
                 if (File.Exists(_locationsFile))
                     Locations = JsonConvert.DeserializeObject<List<Location>>(File.ReadAllText(_locationsFile));
 
-                if (File.Exists(_recipesFile))
-                    Recipes = JsonConvert.DeserializeObject<List<Recipe>>(File.ReadAllText(_recipesFile));
+                if (File.Exists(_productsFile))
+                    Products = JsonConvert.DeserializeObject<List<Product>>(File.ReadAllText(_productsFile));
 
                 if (File.Exists(_componentsFile))
                     Components = JsonConvert.DeserializeObject<List<Component>>(File.ReadAllText(_componentsFile));
@@ -72,7 +72,7 @@ namespace RatStore.Data
             {
                 System.IO.File.WriteAllText(_customersFile, JsonConvert.SerializeObject(Customers));
                 System.IO.File.WriteAllText(_locationsFile, JsonConvert.SerializeObject(Locations));
-                System.IO.File.WriteAllText(_recipesFile, JsonConvert.SerializeObject(Recipes));
+                System.IO.File.WriteAllText(_productsFile, JsonConvert.SerializeObject(Products));
                 System.IO.File.WriteAllText(_componentsFile, JsonConvert.SerializeObject(Components));
                 System.IO.File.WriteAllText(_ordersFile, JsonConvert.SerializeObject(Orders));
             }
@@ -157,24 +157,24 @@ namespace RatStore.Data
         }
         #endregion
 
-        #region Recipe
-        public void AddRecipe(Recipe recipe)
+        #region Product
+        public void AddRecipe(Product product)
         {
-            Recipes.Add(recipe);
+            Products.Add(product);
         }
-        public Recipe TryGetRecipeByProductName(string name)
+        public Product TryGetProductByProductName(string name)
         {
-            foreach (Recipe r in Recipes)
+            foreach (Product product in Products)
             {
-                if (r.EndProductName == name)
-                    return r;
+                if (product.Name == name)
+                    return product;
             }
 
             throw new Exception($"No recipe found with name: {name}");
         }
-        public List<Recipe> GetAllRecipes()
+        public List<Product> GetAllProducts()
         {
-            return new List<Recipe>(Recipes);
+            return new List<Product>(Products);
         }
         #endregion
 

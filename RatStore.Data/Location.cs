@@ -4,7 +4,7 @@ using System.Text;
 
 namespace RatStore.Data
 {
-    public class Location
+    public abstract class Location
     {
         public IDataStore DataStore { get; protected set; }
 
@@ -18,6 +18,13 @@ namespace RatStore.Data
 
         public List<Order> OrderHistory { get; set; }
 
+        public Location()
+        {
+            Inventory = new Dictionary<Component, int>();
+            AvailableProducts = new List<Product>();
+            OrderHistory = new List<Order>();
+        }
+
         public void TryChangeLocation(int targetStoreId)
         {
             Location temp = DataStore.TryGetLocationById(targetStoreId);
@@ -30,39 +37,36 @@ namespace RatStore.Data
         }
 
         #region Inventory Management
-        virtual public void UpdateAvailableProducts()
+        virtual public List<Product> GetAvailableProducts()
         {
             throw new Exception("No data for Location class!");
         }
-        virtual public bool CanFulfillRecipeQty(Recipe recipe, int quantity)
+        virtual public bool CanFulfillProductQty(Product product, int quantity)
         {
-            foreach (Component comp in recipe.Ingredients.Keys)
+            foreach (Component comp in product.Ingredients.Keys)
             {
-                if (recipe.Ingredients[comp] * quantity > Inventory[comp])
+                if (product.Ingredients[comp] * quantity > Inventory[comp])
                     return false;
             }
 
             return true;
         }
-        virtual public void TryFulfillRecipeQty(Recipe recipe, int quantity)
+        public bool CanFulfillOrder(Order order)
         {
-            foreach (Component comp in recipe.Ingredients.Keys)
+            foreach (Product product in order.OrderProducts.Keys)
             {
-                if (recipe.Ingredients[comp] * quantity <= Inventory[comp])
-                {
-                    Inventory[comp] -= recipe.Ingredients[comp] * quantity;
-                }
-                else throw new Exception($"Not enough ingredients for recipe: {recipe.EndProductName}");
+                if (!CanFulfillProductQty(product, order.OrderProducts[product]))
+                    return false;
             }
+
+            return true;
         }
         #endregion
 
         #region Order Manipulation
-        public Order TryBuildOrder(Location location, Customer customer, Dictionary<Product, int> products)
+        public Order TryBuildOrder(Customer customer, Dictionary<Product, int> products)
         {
-            if (!ValidateLocation(location))
-                throw new Exception("Order build failed: invalid location");
-            else if (!ValidateCustomer(customer))
+            if (!ValidateCustomer(customer))
                 throw new Exception("Order build failed: invalid customer");
             else if (!ValidateProductRequest(products))
                 throw new Exception("Order build failed: invalid products dictionary");
@@ -71,7 +75,7 @@ namespace RatStore.Data
                 Order o = new Order()
                 {
                     CustomerId = customer.Id,
-                    OriginStoreId = location.Id,
+                    OriginStoreId = this.Id,
                     OrderProducts = products,
                     OrderId = DataStore.GetNextOrderId()
                 };
@@ -83,6 +87,17 @@ namespace RatStore.Data
         {
             if (!ValidateOrder(order))
                 throw new Exception("Invalid order");
+
+            if (!CanFulfillOrder(order))
+                throw new Exception("Inventory has insufficient components");
+
+            foreach (Product product in order.OrderProducts.Keys)
+            {
+                foreach (Component component in product.Ingredients.Keys)
+                {
+                    Inventory[component] -= order.OrderProducts[product] * product.Ingredients[component];
+                }
+            }
 
             DataStore.AddOrder(order);
         }

@@ -1,22 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 using RatStore.Data;
+using RatStore.Logic;
 
 namespace RatStore.UI
 {
-    static class RatStoreConsoleExtensions
+    static class ConsoleExtensions
     {
-        //public static void PrintAvailableProducts(this Location location)
-        //{
-        //    location.UpdateAvailableProducts();
-
-        //    for (int i = 0; i < location.AvailableProducts.Count; ++i)
-        //    {
-        //        Console.WriteLine($"{i}: {location.AvailableProducts[i]}");
-        //    }
-        //}
-
+        #region RatStore
         public static void PrintStoreInformation(this Location location)
         {
             Console.WriteLine($"You are currently at store {location.Id}.");
@@ -53,16 +46,13 @@ namespace RatStore.UI
         public static void PrintAvailableProducts(this Location location)
         {
             Console.WriteLine($"The following products are available at store {location.Id}:");
-            List<Recipe> allRecipes = location.DataStore.GetAllRecipes();
-            for (int i = 0; i < allRecipes.Count; ++i)
+            List<Product> availableProducts = location.GetAvailableProducts();
+            for (int i = 0; i < availableProducts.Count; ++i)
             {
-                if (location.CanFulfillRecipeQty(allRecipes[i], 1))
+                Console.WriteLine($"{i}: {availableProducts[i].Name} --");
+                foreach (Component component in availableProducts[i].Ingredients.Keys)
                 {
-                    Console.WriteLine($"{i}: {allRecipes[i].EndProductName} --");
-                    foreach (Component component in allRecipes[i].Ingredients.Keys)
-                    {
-                        Console.WriteLine($"    {component.Name} x {allRecipes[i].Ingredients[component]}");
-                    }
+                    Console.WriteLine($"    {component.Name} x {availableProducts[i].Ingredients[component]}");
                 }
             }
         }
@@ -80,12 +70,42 @@ namespace RatStore.UI
             }
         }
 
+        public static void PrintOrderAtId(this Location location, int id)
+        {
+            Order order = location.DataStore.TryGetOrderById(id);
+            Console.WriteLine($"{order.OrderId}: {order.OrderProducts.Count} products ordered on {order.OrderTimestamp.ToShortDateString()} for {order.Const}");
+        }
+
+        public static void PrintCustomerOrderHistory(this Location location, int customerId)
+        {
+            List<Order> customerOrderHistory = location.DataStore.GetOrderHistory().Where(order => order.CustomerId == customerId).ToList();
+
+            if (customerOrderHistory.Count == 0)
+                Console.WriteLine("Order history is empty for this customer.");
+            else
+                foreach (Order order in customerOrderHistory)
+                {
+                    Console.WriteLine($"{order.OrderId}: {order.OrderProducts.Count} products ordered on {order.OrderTimestamp.ToShortDateString()} for {order.Const}");
+                }
+        }
+
         public static void PrintLocationOrderHistory(this Location thisLocation)
         {
-            foreach (Order order in thisLocation.OrderHistory)
-            {
-                Console.WriteLine($"{order.OrderId}: {order.OrderProducts.Count} products ordered on {order.OrderTimestamp.ToShortDateString()} for {order.Const}");
-            }
+            if (thisLocation.OrderHistory.Count == 0)
+                Console.WriteLine("Order history is empty for this location.");
+            else
+                foreach (Order order in thisLocation.OrderHistory)
+                {
+                    Console.WriteLine($"{order.OrderId}: {order.OrderProducts.Count} products ordered on {order.OrderTimestamp.ToShortDateString()} for {order.Const}");
+                }
         }
+        #endregion
+
+        #region Navigator
+        public static void PrintCart(this Navigator navigator)
+        {
+            Console.WriteLine($"Total: ${navigator.Subtotal.ToString("C0")}");
+        }
+        #endregion
     }
 }

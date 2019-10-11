@@ -28,6 +28,21 @@ namespace RatStore.Logic
             }
         }
 
+        public override List<Product> GetAvailableProducts()
+        {
+            List<Product> availableProducts = new List<Product>();
+            List<Product> allProducts = DataStore.GetAllProducts();
+            for (int i = 0; i < allProducts.Count; ++i)
+            {
+                if (CanFulfillProductQty(allProducts[i], 1))
+                {
+                    availableProducts.Add(allProducts[i]);
+                }
+            }
+
+            return availableProducts;
+        }
+
         #region Validation
         protected override bool ValidateLocation(Location location)
         {

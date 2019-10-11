@@ -26,10 +26,10 @@ namespace RatStore.Data
         int GetNextLocationId();
         #endregion
 
-        #region Recipe
-        void AddRecipe(Recipe recipe);
-        Recipe TryGetRecipeByProductName(string name);
-        List<Recipe> GetAllRecipes();
+        #region Product
+        void AddRecipe(Product product);
+        Product TryGetProductByProductName(string name);
+        List<Product> GetAllProducts();
         #endregion
 
         #region Component

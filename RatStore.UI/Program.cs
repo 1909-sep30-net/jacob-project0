@@ -30,13 +30,13 @@ namespace RatStore.UI
                     switch (option)
                     {
                         case '1':
-                            // Order submenu
+                            Order(ref nav);
                             break;
                         case '2':
-                            // Information submenu
+                            Information(nav);
                             break;
                         case '3':
-                            // Change locations submenu
+                            ChangeLocation(ref nav);
                             break;
                         case '0':
                             Console.WriteLine("Logging out...");
@@ -140,17 +140,117 @@ namespace RatStore.UI
 
         static void Order(ref Navigator nav)
         {
-            Dictionary<int, int> cart = new Dictionary<int, int>();
+            Console.WriteLine("Let's build your order! Type in the format 1 10 for 10 of produc 1.");
+            Console.WriteLine("Type 'end' to stop or select from the following: ");
+
+            while (true)
+            {
+                try
+                {
+                    nav.CurrentStore.PrintAvailableProducts();
+                    string[] input = Console.ReadLine().Split(' ');
+                    if (input.Length >= 1)
+                    {
+                        if (input[0].ToLower() == "end")
+                            break;
+                        else if (input.Length > 1)
+                        {
+                            int productId = int.Parse(input[0]);
+                            int quantity = int.Parse(input[1]);
+
+                            nav.AddProductToCart(productId, quantity);
+                            nav.PrintCart();
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Please enter a valid input.");
+                }
+            }
         }
 
         static void Information(Navigator nav)
         {
+            // order history of current location
+            // ingredient inventory of current store
+            // order lookup for current customer (by id?)
+            // order history for current customer
 
+            Console.WriteLine("  What information would you like to retrieve?");
+            Console.WriteLine($"  1 - Inventory of store {nav.CurrentStore.Id}");
+            Console.WriteLine($"  2 - Look up a past order by id");
+            Console.WriteLine($"  3 - Get your order history");
+            Console.WriteLine($"  0 - Cancel");
+
+            bool haveOption = false;
+            while (!haveOption)
+            {
+                switch (Console.ReadKey().KeyChar)
+                {
+                    case '1':
+                        nav.CurrentStore.PrintInventory();
+                        haveOption = true;
+                        break;
+
+                    case '2':
+                        Console.Write("Enter order id: ");
+                        string input = Console.ReadLine();
+                        Console.WriteLine("");
+
+                        try
+                        {
+                            int id = int.Parse(input);
+                            nav.CurrentStore.PrintOrderAtId(id);
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine("Please enter a valid order id.");
+                        }
+
+                        haveOption = true;
+                        break;
+
+                    case '3':
+                        nav.CurrentStore.PrintCustomerOrderHistory(nav.CurrentCustomer.Id);
+                        haveOption = true;
+                        break;
+
+                    case '0':
+                        Console.WriteLine("Canceling...");
+                        haveOption = true;
+                        break;
+
+                    default:
+                        Console.WriteLine("Please choose a valid option.");
+                        break;
+                }
+
+                break;
+            }
         }
 
         static void ChangeLocation(ref Navigator nav)
         {
+            nav.CurrentStore.PrintAllLocations();
 
+            while (true)
+            {
+                Console.Write("Enter the ID of the store you'd like to switch to: ");
+                string input = Console.ReadLine();
+                Console.WriteLine("");
+
+                try
+                {
+                    int index = int.Parse(input);
+                    nav.CurrentStore.TryChangeLocation(index);
+                    break;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Please enter a valid id.");
+                }
+            }
         }
     }
 }
