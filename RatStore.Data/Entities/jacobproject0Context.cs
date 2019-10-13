@@ -15,20 +15,28 @@ namespace RatStore.Data.Entities
         {
         }
 
-        public virtual DbSet<Components> Components { get; set; }
-        public virtual DbSet<Customers> Customers { get; set; }
-        public virtual DbSet<LocationInventories> LocationInventories { get; set; }
-        public virtual DbSet<Locations> Locations { get; set; }
+        public virtual DbSet<Component> Component { get; set; }
+        public virtual DbSet<Customer> Customer { get; set; }
+        public virtual DbSet<Inventory> Inventory { get; set; }
+        public virtual DbSet<Location> Location { get; set; }
+        public virtual DbSet<Order> Order { get; set; }
         public virtual DbSet<OrderDetails> OrderDetails { get; set; }
-        public virtual DbSet<Orders> Orders { get; set; }
-        public virtual DbSet<ProductComponents> ProductComponents { get; set; }
-        public virtual DbSet<Products> Products { get; set; }
+        public virtual DbSet<Product> Product { get; set; }
+        public virtual DbSet<ProductComponent> ProductComponent { get; set; }
+
+        /* protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+
+            }
+        } */
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Components>(entity =>
+            modelBuilder.Entity<Component>(entity =>
             {
-                entity.ToTable("components");
+                entity.ToTable("component");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
@@ -41,9 +49,9 @@ namespace RatStore.Data.Entities
                     .HasMaxLength(255);
             });
 
-            modelBuilder.Entity<Customers>(entity =>
+            modelBuilder.Entity<Customer>(entity =>
             {
-                entity.ToTable("customers");
+                entity.ToTable("customer");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
@@ -67,11 +75,11 @@ namespace RatStore.Data.Entities
                     .HasMaxLength(255);
             });
 
-            modelBuilder.Entity<LocationInventories>(entity =>
+            modelBuilder.Entity<Inventory>(entity =>
             {
                 entity.HasNoKey();
 
-                entity.ToTable("locationInventories");
+                entity.ToTable("inventory");
 
                 entity.Property(e => e.ComponentId).HasColumnName("componentId");
 
@@ -80,25 +88,51 @@ namespace RatStore.Data.Entities
                 entity.Property(e => e.Quantity).HasColumnName("quantity");
 
                 entity.HasOne(d => d.Component)
-                    .WithMany(p => p.LocationInventories)
+                    .WithMany(p => p.Inventory)
                     .HasForeignKey(d => d.ComponentId)
-                    .HasConstraintName("FK__locationI__compo__5812160E");
+                    .HasConstraintName("FK__inventory__compo__6D0D32F4");
 
                 entity.HasOne(d => d.Location)
-                    .WithMany(p => p.LocationInventories)
+                    .WithMany(p => p.Inventory)
                     .HasForeignKey(d => d.LocationId)
-                    .HasConstraintName("FK__locationI__locat__571DF1D5");
+                    .HasConstraintName("FK__inventory__locat__6C190EBB");
             });
 
-            modelBuilder.Entity<Locations>(entity =>
+            modelBuilder.Entity<Location>(entity =>
             {
-                entity.ToTable("locations");
+                entity.ToTable("location");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.Address)
                     .HasColumnName("address")
                     .HasMaxLength(255);
+            });
+
+            modelBuilder.Entity<Order>(entity =>
+            {
+                entity.ToTable("order");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.CustomerId).HasColumnName("customerId");
+
+                entity.Property(e => e.LocationId).HasColumnName("locationId");
+
+                entity.Property(e => e.OrderDate)
+                    .HasColumnName("orderDate")
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("('GETDATE()')");
+
+                entity.HasOne(d => d.Customer)
+                    .WithMany(p => p.Order)
+                    .HasForeignKey(d => d.CustomerId)
+                    .HasConstraintName("FK__order__customerI__6EF57B66");
+
+                entity.HasOne(d => d.Location)
+                    .WithMany(p => p.Order)
+                    .HasForeignKey(d => d.LocationId)
+                    .HasConstraintName("FK__order__locationI__6E01572D");
             });
 
             modelBuilder.Entity<OrderDetails>(entity =>
@@ -116,45 +150,30 @@ namespace RatStore.Data.Entities
                 entity.HasOne(d => d.Order)
                     .WithMany(p => p.OrderDetails)
                     .HasForeignKey(d => d.OrderId)
-                    .HasConstraintName("FK__orderDeta__order__5AEE82B9");
+                    .HasConstraintName("FK__orderDeta__order__6FE99F9F");
 
                 entity.HasOne(d => d.Product)
                     .WithMany(p => p.OrderDetails)
                     .HasForeignKey(d => d.ProductId)
-                    .HasConstraintName("FK__orderDeta__produ__5BE2A6F2");
+                    .HasConstraintName("FK__orderDeta__produ__70DDC3D8");
             });
 
-            modelBuilder.Entity<Orders>(entity =>
+            modelBuilder.Entity<Product>(entity =>
             {
-                entity.ToTable("orders");
+                entity.ToTable("product");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
-                entity.Property(e => e.CustomerId).HasColumnName("customerId");
-
-                entity.Property(e => e.LocationId).HasColumnName("locationId");
-
-                entity.Property(e => e.OrderDate)
-                    .HasColumnName("orderDate")
-                    .HasColumnType("datetime")
-                    .HasDefaultValueSql("('GETDATE()')");
-
-                entity.HasOne(d => d.Customer)
-                    .WithMany(p => p.Orders)
-                    .HasForeignKey(d => d.CustomerId)
-                    .HasConstraintName("FK__orders__customer__59FA5E80");
-
-                entity.HasOne(d => d.Location)
-                    .WithMany(p => p.Orders)
-                    .HasForeignKey(d => d.LocationId)
-                    .HasConstraintName("FK__orders__location__59063A47");
+                entity.Property(e => e.Name)
+                    .HasColumnName("name")
+                    .HasMaxLength(255);
             });
 
-            modelBuilder.Entity<ProductComponents>(entity =>
+            modelBuilder.Entity<ProductComponent>(entity =>
             {
                 entity.HasNoKey();
 
-                entity.ToTable("productComponents");
+                entity.ToTable("productComponent");
 
                 entity.Property(e => e.ComponentId).HasColumnName("componentId");
 
@@ -163,25 +182,14 @@ namespace RatStore.Data.Entities
                 entity.Property(e => e.Quantity).HasColumnName("quantity");
 
                 entity.HasOne(d => d.Component)
-                    .WithMany(p => p.ProductComponents)
+                    .WithMany(p => p.ProductComponent)
                     .HasForeignKey(d => d.ComponentId)
-                    .HasConstraintName("FK__productCo__compo__5629CD9C");
+                    .HasConstraintName("FK__productCo__compo__6B24EA82");
 
                 entity.HasOne(d => d.Product)
-                    .WithMany(p => p.ProductComponents)
+                    .WithMany(p => p.ProductComponent)
                     .HasForeignKey(d => d.ProductId)
-                    .HasConstraintName("FK__productCo__produ__5535A963");
-            });
-
-            modelBuilder.Entity<Products>(entity =>
-            {
-                entity.ToTable("products");
-
-                entity.Property(e => e.Id).HasColumnName("id");
-
-                entity.Property(e => e.Name)
-                    .HasColumnName("name")
-                    .HasMaxLength(255);
+                    .HasConstraintName("FK__productCo__produ__6A30C649");
             });
 
             OnModelCreatingPartial(modelBuilder);

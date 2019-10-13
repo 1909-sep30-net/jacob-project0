@@ -158,7 +158,7 @@ namespace RatStore.Data
         #endregion
 
         #region Product
-        public void AddRecipe(Product product)
+        public void AddProduct(Product product)
         {
             Products.Add(product);
         }
@@ -208,7 +208,7 @@ namespace RatStore.Data
         {
             foreach (Order o in Orders)
             {
-                if (o.OrderId == id)
+                if (o.Id == id)
                     return o;
             }
 

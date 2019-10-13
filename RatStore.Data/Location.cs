@@ -4,7 +4,7 @@ using System.Text;
 
 namespace RatStore.Data
 {
-    public abstract class Location
+    public class Location
     {
         public IDataStore DataStore { get; protected set; }
 
@@ -12,7 +12,7 @@ namespace RatStore.Data
 
         public int Id { get; set; }
 
-        public Dictionary<Component, int> Inventory { get; set; }
+        public List<Inventory> Inventory { get; set; }
 
         public List<Product> AvailableProducts { get; protected set; }
 
@@ -64,7 +64,7 @@ namespace RatStore.Data
         #endregion
 
         #region Order Manipulation
-        public Order TryBuildOrder(Customer customer, Dictionary<Product, int> products)
+        public Order TryBuildOrder(Customer customer, List<OrderDetails> products)
         {
             if (!ValidateCustomer(customer))
                 throw new Exception("Order build failed: invalid customer");
@@ -91,11 +91,18 @@ namespace RatStore.Data
             if (!CanFulfillOrder(order))
                 throw new Exception("Inventory has insufficient components");
 
-            foreach (Product product in order.OrderProducts.Keys)
+            foreach (OrderDetails orderDetails in order.OrderDetails)
             {
-                foreach (Component component in product.Ingredients.Keys)
+                /* foreach (Component component in product.Ingredients.Keys)
                 {
                     Inventory[component] -= order.OrderProducts[product] * product.Ingredients[component];
+                } */
+
+                foreach (ProductComponent components in orderDetails.Product.Ingredients)
+                {
+                    Inventory inventoryItem = Inventory.Find(item => item.Component.Id == components.Component.Id);
+                    //OrderDetails orderItem = order.OrderDetails.Find(orderItem => orderItem.Product.Ingredients.Find(item => item.Component.Id == components.Component.Id));
+                    inventoryItem.Quantity -= .Quantity;
                 }
             }
 
@@ -112,7 +119,7 @@ namespace RatStore.Data
         {
             return true;
         }
-        virtual protected bool ValidateProductRequest(Dictionary<Product, int> products)
+        virtual protected bool ValidateProductRequest(OrderDetails products)
         {
             return true;
         }

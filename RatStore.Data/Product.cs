@@ -7,22 +7,28 @@ namespace RatStore.Data
 {
     public class Product
     {
-        public Product(string name, Dictionary<Component, int> ingredients)
+        public Product()
+        {
+
+        }
+        public Product(string name, List<ProductComponent> ingredients)
         {
             Name = name;
             Ingredients = ingredients;
         }
 
-        public Dictionary<Component, int> Ingredients { get; set; }
+        public int Id { get; set; }
 
-        public double Cost 
+        public List<ProductComponent> Ingredients { get; set; }
+
+        public decimal Cost 
         { 
             get
             {
-                double sum = 0;
-                foreach (Component c in Ingredients.Keys)
+                decimal sum = 0;
+                foreach (ProductComponent c in Ingredients)
                 {
-                    sum += c.Cost*Ingredients[c];
+                    sum += c.Component.Cost*c.Quantity;
                 }
 
                 return sum;

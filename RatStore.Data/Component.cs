@@ -6,7 +6,8 @@ namespace RatStore.Data
 {
     public struct Component
     {
-        public double Cost { get; set; }
+        public int Id { get; set; }
+        public decimal Cost { get; set; }
         public string Name { get; set; }
     }
 }

@@ -8,22 +8,22 @@ namespace RatStore.Data
     {
         public Order()
         {
-            OrderTimestamp = DateTime.Now;
+            OrderDate = DateTime.Now;
         }
-        public int OriginStoreId { get; set; }
+        public int LocationId { get; set; }
         public int CustomerId { get; set; }
-        public int OrderId { get; set; }
-        public DateTime OrderTimestamp { get; set; }
-        public Dictionary<Product, int> OrderProducts { get; set; }
+        public int Id { get; set; }
+        public DateTime OrderDate { get; set; }
+        public List<OrderDetails> OrderDetails { get; set; }
 
-        public double Const 
+        public decimal Const 
         { 
             get
             {
-                double sum = 0;
-                foreach (Product product in OrderProducts.Keys)
+                decimal sum = 0;
+                foreach (OrderDetails orderDetails in OrderDetails)
                 {
-                    sum += product.Cost * OrderProducts[product];
+                    sum += orderDetails.Product.Cost * orderDetails.Quantity;
                 }
 
                 return sum;

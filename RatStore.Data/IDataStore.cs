@@ -16,7 +16,6 @@ namespace RatStore.Data
         Customer TryGetCustomerByNameAndPhone(string firstName, string lastName, string phoneNumber);
         Customer TryGetCustomerById(int id);
         List<Customer> GetAllCustomers();
-        int GetNextCustomerId();
         #endregion
 
         #region Location
@@ -27,7 +26,7 @@ namespace RatStore.Data
         #endregion
 
         #region Product
-        void AddRecipe(Product product);
+        void AddProduct(Product product);
         Product TryGetProductByProductName(string name);
         List<Product> GetAllProducts();
         #endregion

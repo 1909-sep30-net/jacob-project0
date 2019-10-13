@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using RatStore.Data;
+using System.Linq;
 
 namespace RatStore.Logic
 {
@@ -11,16 +12,21 @@ namespace RatStore.Logic
 
         public Customer CurrentCustomer { get; set; }
 
-        public Dictionary<Product, int> Cart { get; set; }
+        public List<OrderDetails> Cart { get; set; }
 
-        public double Subtotal
+        public Navigator()
+        {
+            Cart = new List<OrderDetails>();
+        }
+
+        public decimal Subtotal
         {
             get
             {
-                double sum = 0;
-                foreach (Product product in Cart.Keys)
+                decimal sum = 0;
+                foreach (OrderDetails cartItem in Cart)
                 {
-                    sum += product.Cost * Cart[product];
+                    sum += cartItem.Product.Cost * cartItem.Quantity;
                 }
 
                 return sum;
@@ -40,13 +46,21 @@ namespace RatStore.Logic
 
             Product product = availableProducts[productId];
 
-            if (!Cart.ContainsKey(product) || Cart[product] == 0)
-                Cart.Add(product, quantity);
-            else Cart[product] += quantity;
+            if (!Cart.Exists(item => item.Product.Id == product.Id))
+                Cart.Add(new OrderDetails { Product = product, Quantity = quantity });
+            else
+            {
+                OrderDetails cartItem = Cart.Find(item => item.Product.Id == product.Id);
+                cartItem.Quantity += quantity;
+            }
 
             if (!CurrentStore.CanFulfillProductQty(product, quantity))
             {
-                Cart[product] -= quantity;
+                OrderDetails cartItem = Cart.Find(item => item.Product.Id == product.Id);
+                cartItem.Quantity -= quantity;
+                if (cartItem.Quantity == 0)
+                    Cart.Remove(cartItem);
+
                 throw new Exception($"Inventory cannot fulfill quantity: {product.Name} x {quantity}");
             }
         }

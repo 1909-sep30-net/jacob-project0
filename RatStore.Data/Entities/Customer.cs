@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace RatStore.Data.Entities
 {
-    public partial class Customers
+    public partial class Customer
     {
-        public Customers()
+        public Customer()
         {
-            Orders = new HashSet<Orders>();
+            Order = new HashSet<Order>();
         }
 
         public int Id { get; set; }
@@ -16,6 +16,6 @@ namespace RatStore.Data.Entities
         public string LastName { get; set; }
         public string PhoneNumber { get; set; }
 
-        public virtual ICollection<Orders> Orders { get; set; }
+        public virtual ICollection<Order> Order { get; set; }
     }
 }

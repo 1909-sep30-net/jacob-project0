@@ -3,18 +3,18 @@ using System.Collections.Generic;
 
 namespace RatStore.Data.Entities
 {
-    public partial class Products
+    public partial class Product
     {
-        public Products()
+        public Product()
         {
             OrderDetails = new HashSet<OrderDetails>();
-            ProductComponents = new HashSet<ProductComponents>();
+            ProductComponent = new HashSet<ProductComponent>();
         }
 
         public int Id { get; set; }
         public string Name { get; set; }
 
         public virtual ICollection<OrderDetails> OrderDetails { get; set; }
-        public virtual ICollection<ProductComponents> ProductComponents { get; set; }
+        public virtual ICollection<ProductComponent> ProductComponent { get; set; }
     }
 }
