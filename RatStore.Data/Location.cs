@@ -20,7 +20,7 @@ namespace RatStore.Data
 
         public Location()
         {
-            Inventory = new Dictionary<Component, int>();
+            Inventory = new List<Inventory>();
             AvailableProducts = new List<Product>();
             OrderHistory = new List<Order>();
         }
@@ -41,11 +41,11 @@ namespace RatStore.Data
         {
             throw new Exception("No data for Location class!");
         }
-        virtual public bool CanFulfillProductQty(Product product, int quantity)
+        virtual public bool CanFulfillProductQty(OrderDetails orderDetails)
         {
-            foreach (Component comp in product.Ingredients.Keys)
+            foreach (ProductComponent comp in orderDetails.Product.Ingredients)
             {
-                if (product.Ingredients[comp] * quantity > Inventory[comp])
+                if (comp.Quantity * orderDetails.Quantity > Inventory.Find(inventoryItem => inventoryItem.Component.Id == comp.Component.Id).Quantity)
                     return false;
             }
 
@@ -53,9 +53,9 @@ namespace RatStore.Data
         }
         public bool CanFulfillOrder(Order order)
         {
-            foreach (Product product in order.OrderProducts.Keys)
+            foreach (OrderDetails orderDetails in order.OrderDetails)
             {
-                if (!CanFulfillProductQty(product, order.OrderProducts[product]))
+                if (!CanFulfillProductQty(orderDetails))
                     return false;
             }
 
@@ -64,20 +64,20 @@ namespace RatStore.Data
         #endregion
 
         #region Order Manipulation
-        public Order TryBuildOrder(Customer customer, List<OrderDetails> products)
+        public Order TryBuildOrder(Customer customer, List<OrderDetails> orderDetails)
         {
             if (!ValidateCustomer(customer))
                 throw new Exception("Order build failed: invalid customer");
-            else if (!ValidateProductRequest(products))
+            else if (!ValidateProductRequest(orderDetails))
                 throw new Exception("Order build failed: invalid products dictionary");
             else
             {
                 Order o = new Order()
                 {
                     CustomerId = customer.Id,
-                    OriginStoreId = this.Id,
-                    OrderProducts = products,
-                    OrderId = DataStore.GetNextOrderId()
+                    LocationId = Id,
+                    OrderDetails = orderDetails,
+                    //Id = DataStore.GetNextOrderId()
                 };
 
                 return o;
@@ -93,16 +93,10 @@ namespace RatStore.Data
 
             foreach (OrderDetails orderDetails in order.OrderDetails)
             {
-                /* foreach (Component component in product.Ingredients.Keys)
+                foreach (ProductComponent component in orderDetails.Product.Ingredients)
                 {
-                    Inventory[component] -= order.OrderProducts[product] * product.Ingredients[component];
-                } */
-
-                foreach (ProductComponent components in orderDetails.Product.Ingredients)
-                {
-                    Inventory inventoryItem = Inventory.Find(item => item.Component.Id == components.Component.Id);
-                    //OrderDetails orderItem = order.OrderDetails.Find(orderItem => orderItem.Product.Ingredients.Find(item => item.Component.Id == components.Component.Id));
-                    inventoryItem.Quantity -= .Quantity;
+                    Inventory inventoryItem = Inventory.Find(item => item.Component.Id == component.Component.Id);
+                    inventoryItem.Quantity -= component.Quantity;
                 }
             }
 
@@ -119,7 +113,7 @@ namespace RatStore.Data
         {
             return true;
         }
-        virtual protected bool ValidateProductRequest(OrderDetails products)
+        virtual protected bool ValidateProductRequest(List<OrderDetails> products)
         {
             return true;
         }

@@ -45,18 +45,26 @@ namespace RatStore.Logic
                 throw new Exception("Invalid product id");
 
             Product product = availableProducts[productId];
+            OrderDetails cartItem;
 
             if (!Cart.Exists(item => item.Product.Id == product.Id))
-                Cart.Add(new OrderDetails { Product = product, Quantity = quantity });
+            {
+                cartItem = new OrderDetails 
+                { 
+                    Product = product, 
+                    Quantity = quantity 
+                };
+
+                Cart.Add(cartItem);
+            }
             else
             {
-                OrderDetails cartItem = Cart.Find(item => item.Product.Id == product.Id);
+                cartItem = Cart.Find(item => item.Product.Id == product.Id);
                 cartItem.Quantity += quantity;
             }
 
-            if (!CurrentStore.CanFulfillProductQty(product, quantity))
+            if (!CurrentStore.CanFulfillProductQty(cartItem))
             {
-                OrderDetails cartItem = Cart.Find(item => item.Product.Id == product.Id);
                 cartItem.Quantity -= quantity;
                 if (cartItem.Quantity == 0)
                     Cart.Remove(cartItem);
