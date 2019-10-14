@@ -17,7 +17,7 @@ namespace RatStore.Logic
 
             try
             {
-                TryChangeLocation(0);
+                TryChangeLocation(1);
             }
             catch
             {
@@ -25,7 +25,9 @@ namespace RatStore.Logic
                 Address = "123 Test St, Everett, WA 98203";
                 Id = 0;
                 DataStore.AddLocation(this);
-                TryChangeLocation(0);
+                DataStore.Save();
+
+                TryChangeLocation(1);
             }
         }
 

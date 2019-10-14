@@ -48,7 +48,7 @@ namespace RatStore.UI
                     }
                 }
 
-            nav.CurrentStore.DataStore.Cleanup();
+                nav.CurrentStore.DataStore.Cleanup();
             }
         }
 
@@ -113,10 +113,13 @@ namespace RatStore.UI
                 catch (Exception e)
                 {
                     Console.Write($"Your name is {firstName} {lastName} and your number is {phoneNumber}. Is this correct? (y/n) ");
-                    if (Console.ReadKey().KeyChar != 'y')
+
+                    char c = Console.ReadKey().KeyChar;
+                    Console.WriteLine("");
+
+                    if (c != 'y')
                         continue;
-
-
+ 
                     nav.CurrentStore.DataStore.AddCustomer(firstName, middleName, lastName, phoneNumber);
                     nav.CurrentStore.DataStore.Save();
 
@@ -151,6 +154,8 @@ namespace RatStore.UI
                 {
                     nav.CurrentStore.PrintAvailableProducts();
                     string[] input = Console.ReadLine().Split(' ');
+                    Console.WriteLine("");
+
                     if (input.Length >= 1)
                     {
                         if (input[0].ToLower() == "end")
@@ -159,6 +164,9 @@ namespace RatStore.UI
                         {
                             nav.CurrentStore.TrySubmitOrder(nav.CurrentStore.TryBuildOrder(nav.CurrentCustomer, nav.Cart));
                             nav.CurrentStore.DataStore.Save();
+
+                            Console.WriteLine("Order submitted!");
+                            break;
                         }
                         else if (input.Length > 1)
                         {
@@ -168,6 +176,8 @@ namespace RatStore.UI
                             nav.AddProductToCart(productId, quantity);
                             nav.PrintCart();
                         }
+                        else
+                            throw new Exception("Invalid input.");
                     }
                 }
                 catch (Exception e)
@@ -193,7 +203,10 @@ namespace RatStore.UI
             bool haveOption = false;
             while (!haveOption)
             {
-                switch (Console.ReadKey().KeyChar)
+                char c = Console.ReadKey().KeyChar;
+                Console.WriteLine("");
+
+                switch (c)
                 {
                     case '1':
                         nav.CurrentStore.PrintInventory();

@@ -104,7 +104,7 @@ namespace RatStore.UI
         #region Navigator
         public static void PrintCart(this Navigator navigator)
         {
-            Console.WriteLine($"Total: ${navigator.Subtotal.ToString("C0")}");
+            Console.WriteLine($"Total: {navigator.Subtotal.ToString("C0")}");
         }
         #endregion
     }

@@ -25,7 +25,7 @@ namespace RatStore.Data
                 //.UseLoggerFactory(AppLoggerFactory)
                 .Options;
 
-            jacobproject0Context _context = new jacobproject0Context(_options);
+            _context = new jacobproject0Context(_options);
         }
 
         public void Initialize()

@@ -18,7 +18,7 @@ namespace RatStore.Data
                 decimal sum = 0;
                 foreach (ProductComponent c in Ingredients)
                 {
-                    sum += c.Component.Cost*c.Quantity;
+                    sum += c.Component.Cost*c.Quantity ?? throw new ArgumentNullException($"{c.Component} has null cost");
                 }
 
                 return sum;
