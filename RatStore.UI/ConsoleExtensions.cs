@@ -37,9 +37,9 @@ namespace RatStore.UI
         public static void PrintInventory(this Location location) //(of components)
         {
             Console.WriteLine($"The following ingredients and stocks are available at store {location.Id}:");
-            foreach (Component component in location.Inventory.Keys)
+            foreach (Inventory inventoryItem in location.Inventory)
             {
-                Console.WriteLine($"   {component.Name} x {location.Inventory[component]}");
+                Console.WriteLine($"   {inventoryItem.Component.Name} x {inventoryItem.Quantity}");
             }
         }
 
@@ -50,9 +50,9 @@ namespace RatStore.UI
             for (int i = 0; i < availableProducts.Count; ++i)
             {
                 Console.WriteLine($"{i}: {availableProducts[i].Name} --");
-                foreach (Component component in availableProducts[i].Ingredients.Keys)
+                foreach (ProductComponent ingredient in availableProducts[i].Ingredients)
                 {
-                    Console.WriteLine($"    {component.Name} x {availableProducts[i].Ingredients[component]}");
+                    Console.WriteLine($"    {ingredient.Component.Name} x {ingredient.Quantity}");
                 }
             }
         }
@@ -73,19 +73,19 @@ namespace RatStore.UI
         public static void PrintOrderAtId(this Location location, int id)
         {
             Order order = location.DataStore.TryGetOrderById(id);
-            Console.WriteLine($"{order.OrderId}: {order.OrderProducts.Count} products ordered on {order.OrderTimestamp.ToShortDateString()} for {order.Const}");
+            Console.WriteLine($"{order.Id}: {order.OrderDetails.Count} products ordered on {order.OrderDate.ToShortDateString()} for {order.Const}");
         }
 
         public static void PrintCustomerOrderHistory(this Location location, int customerId)
         {
-            List<Order> customerOrderHistory = location.DataStore.GetOrderHistory().Where(order => order.CustomerId == customerId).ToList();
+            List<Order> customerOrderHistory = location.DataStore.GetOrderHistory(customerId).ToList();
 
             if (customerOrderHistory.Count == 0)
                 Console.WriteLine("Order history is empty for this customer.");
             else
                 foreach (Order order in customerOrderHistory)
                 {
-                    Console.WriteLine($"{order.OrderId}: {order.OrderProducts.Count} products ordered on {order.OrderTimestamp.ToShortDateString()} for {order.Const}");
+                    Console.WriteLine($"{order.Id}: {order.OrderDetails.Count} products ordered on {order.OrderDate.ToShortDateString()} for {order.Const}");
                 }
         }
 
@@ -96,7 +96,7 @@ namespace RatStore.UI
             else
                 foreach (Order order in thisLocation.OrderHistory)
                 {
-                    Console.WriteLine($"{order.OrderId}: {order.OrderProducts.Count} products ordered on {order.OrderTimestamp.ToShortDateString()} for {order.Const}");
+                    Console.WriteLine($"{order.Id}: {order.OrderDetails.Count} products ordered on {order.OrderDate.ToShortDateString()} for {order.Const}");
                 }
         }
         #endregion

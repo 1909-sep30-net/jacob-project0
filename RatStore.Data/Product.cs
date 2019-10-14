@@ -7,16 +7,6 @@ namespace RatStore.Data
 {
     public class Product
     {
-        public Product()
-        {
-
-        }
-        public Product(string name, List<ProductComponent> ingredients)
-        {
-            Name = name;
-            Ingredients = ingredients;
-        }
-
         public int Id { get; set; }
 
         public List<ProductComponent> Ingredients { get; set; }
@@ -36,5 +26,15 @@ namespace RatStore.Data
         }
 
         public string Name { get; set; }
+
+        public Product()
+        {
+            Id = -1;
+        }
+        public Product(string name, List<ProductComponent> ingredients)
+        {
+            Name = name;
+            Ingredients = ingredients;
+        }
     }
 }

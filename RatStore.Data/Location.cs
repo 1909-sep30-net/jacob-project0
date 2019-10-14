@@ -23,6 +23,7 @@ namespace RatStore.Data
             Inventory = new List<Inventory>();
             AvailableProducts = new List<Product>();
             OrderHistory = new List<Order>();
+            Id = -1;
         }
 
         public void TryChangeLocation(int targetStoreId)
@@ -101,6 +102,7 @@ namespace RatStore.Data
             }
 
             DataStore.AddOrder(order);
+            DataStore.Save();
         }
         #endregion
 

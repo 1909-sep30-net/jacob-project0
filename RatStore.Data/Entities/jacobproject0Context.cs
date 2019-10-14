@@ -24,13 +24,14 @@ namespace RatStore.Data.Entities
         public virtual DbSet<Product> Product { get; set; }
         public virtual DbSet<ProductComponent> ProductComponent { get; set; }
 
-        /* protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
-
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+                optionsBuilder.UseSqlServer("Server=tcp:davisjacob.database.windows.net,1433;Initial Catalog=jacob-project0;Persist Security Info=False;User ID=jacobdavis1;Password=ILikeLegos1;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
             }
-        } */
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -56,12 +57,10 @@ namespace RatStore.Data.Entities
                 entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.FirstName)
-                    .IsRequired()
                     .HasColumnName("firstName")
                     .HasMaxLength(255);
 
                 entity.Property(e => e.LastName)
-                    .IsRequired()
                     .HasColumnName("lastName")
                     .HasMaxLength(255);
 
@@ -70,7 +69,6 @@ namespace RatStore.Data.Entities
                     .HasMaxLength(255);
 
                 entity.Property(e => e.PhoneNumber)
-                    .IsRequired()
                     .HasColumnName("phoneNumber")
                     .HasMaxLength(255);
             });
@@ -90,12 +88,12 @@ namespace RatStore.Data.Entities
                 entity.HasOne(d => d.Component)
                     .WithMany(p => p.Inventory)
                     .HasForeignKey(d => d.ComponentId)
-                    .HasConstraintName("FK__inventory__compo__6D0D32F4");
+                    .HasConstraintName("FK__inventory__compo__114A936A");
 
                 entity.HasOne(d => d.Location)
                     .WithMany(p => p.Inventory)
                     .HasForeignKey(d => d.LocationId)
-                    .HasConstraintName("FK__inventory__locat__6C190EBB");
+                    .HasConstraintName("FK__inventory__locat__10566F31");
             });
 
             modelBuilder.Entity<Location>(entity =>
@@ -127,12 +125,12 @@ namespace RatStore.Data.Entities
                 entity.HasOne(d => d.Customer)
                     .WithMany(p => p.Order)
                     .HasForeignKey(d => d.CustomerId)
-                    .HasConstraintName("FK__order__customerI__6EF57B66");
+                    .HasConstraintName("FK__order__customerI__1332DBDC");
 
                 entity.HasOne(d => d.Location)
                     .WithMany(p => p.Order)
                     .HasForeignKey(d => d.LocationId)
-                    .HasConstraintName("FK__order__locationI__6E01572D");
+                    .HasConstraintName("FK__order__locationI__123EB7A3");
             });
 
             modelBuilder.Entity<OrderDetails>(entity =>
@@ -150,12 +148,12 @@ namespace RatStore.Data.Entities
                 entity.HasOne(d => d.Order)
                     .WithMany(p => p.OrderDetails)
                     .HasForeignKey(d => d.OrderId)
-                    .HasConstraintName("FK__orderDeta__order__6FE99F9F");
+                    .HasConstraintName("FK__orderDeta__order__14270015");
 
                 entity.HasOne(d => d.Product)
                     .WithMany(p => p.OrderDetails)
                     .HasForeignKey(d => d.ProductId)
-                    .HasConstraintName("FK__orderDeta__produ__70DDC3D8");
+                    .HasConstraintName("FK__orderDeta__produ__151B244E");
             });
 
             modelBuilder.Entity<Product>(entity =>
@@ -184,12 +182,12 @@ namespace RatStore.Data.Entities
                 entity.HasOne(d => d.Component)
                     .WithMany(p => p.ProductComponent)
                     .HasForeignKey(d => d.ComponentId)
-                    .HasConstraintName("FK__productCo__compo__6B24EA82");
+                    .HasConstraintName("FK__productCo__compo__0F624AF8");
 
                 entity.HasOne(d => d.Product)
                     .WithMany(p => p.ProductComponent)
                     .HasForeignKey(d => d.ProductId)
-                    .HasConstraintName("FK__productCo__produ__6A30C649");
+                    .HasConstraintName("FK__productCo__produ__0E6E26BF");
             });
 
             OnModelCreatingPartial(modelBuilder);

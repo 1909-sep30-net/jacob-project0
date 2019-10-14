@@ -12,5 +12,10 @@ namespace RatStore.Data
         public string PhoneNumber { get; set; }
         public int PreferredStoreId { get; set; }
         public int Id { get; set; }
+
+        public Customer()
+        {
+            Id = -1;
+        }
     }
 }

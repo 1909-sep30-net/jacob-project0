@@ -9,6 +9,7 @@ namespace RatStore.Data
         public Order()
         {
             OrderDate = DateTime.Now;
+            Id = -1;
         }
         public int LocationId { get; set; }
         public int CustomerId { get; set; }

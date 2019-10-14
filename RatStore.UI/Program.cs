@@ -118,6 +118,8 @@ namespace RatStore.UI
 
 
                     nav.CurrentStore.DataStore.AddCustomer(firstName, middleName, lastName, phoneNumber);
+                    nav.CurrentStore.DataStore.Save();
+
                     nav.CurrentCustomer = nav.CurrentStore.DataStore.TryGetCustomerByNameAndPhone(firstName, lastName, phoneNumber);
 
                     Console.WriteLine("");
@@ -140,8 +142,8 @@ namespace RatStore.UI
 
         static void Order(ref Navigator nav)
         {
-            Console.WriteLine("Let's build your order! Type in the format 1 10 for 10 of produc 1.");
-            Console.WriteLine("Type 'end' to stop or select from the following: ");
+            Console.WriteLine("Let's build your order! Type in the format 1 10 for 10 of product 1.");
+            Console.WriteLine("Type 'end' to stop, 'buy' to submit the order, or select from the following: ");
 
             while (true)
             {
@@ -153,6 +155,11 @@ namespace RatStore.UI
                     {
                         if (input[0].ToLower() == "end")
                             break;
+                        else if (input[0].ToLower() == "buy")
+                        {
+                            nav.CurrentStore.TrySubmitOrder(nav.CurrentStore.TryBuildOrder(nav.CurrentCustomer, nav.Cart));
+                            nav.CurrentStore.DataStore.Save();
+                        }
                         else if (input.Length > 1)
                         {
                             int productId = int.Parse(input[0]);

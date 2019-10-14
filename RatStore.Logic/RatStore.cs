@@ -11,7 +11,8 @@ namespace RatStore.Logic
         {
             //TODO: text mode vs sql mode
 
-            DataStore = new TextStore();
+            //DataStore = new TextStore();
+            DataStore = new DatabaseStore();
             DataStore.Initialize();
 
             try
@@ -34,7 +35,13 @@ namespace RatStore.Logic
             List<Product> allProducts = DataStore.GetAllProducts();
             for (int i = 0; i < allProducts.Count; ++i)
             {
-                if (CanFulfillProductQty(allProducts[i], 1))
+                OrderDetails tempDetail = new OrderDetails
+                {
+                    Product = allProducts[i],
+                    Quantity = 1
+                };
+
+                if (CanFulfillProductQty(tempDetail))
                 {
                     availableProducts.Add(allProducts[i]);
                 }
@@ -56,17 +63,17 @@ namespace RatStore.Logic
         {
             if (customer.FirstName == ""
                 || customer.LastName == ""
-                || customer.Id == 0)
+                || customer.Id != -1)
                 return false;
 
             return true;
         }
-        protected override bool ValidateProductRequest(Dictionary<Product, int> products)
+        protected override bool ValidateProductRequest(List<OrderDetails> orderDetails)
         {
-            foreach (Product p in products.Keys)
+            foreach (OrderDetails detail in orderDetails)
             {
-                if (products[p] > 100
-                    || products[p] < 1)
+                if (detail.Quantity > 100
+                    || detail.Quantity < 1)
                     return false;
             }
 
@@ -74,10 +81,10 @@ namespace RatStore.Logic
         }
         protected override bool ValidateOrder(Order order)
         {
-            if (order.CustomerId == 0
-                || order.OrderId == 0
-                || order.OrderProducts.Count == 0
-                || order.OriginStoreId == 0)
+            if (order.CustomerId == -1
+                || order.Id != -1
+                || order.OrderDetails.Count == 0
+                || order.LocationId == 0)
                 return false;
 
             return true;

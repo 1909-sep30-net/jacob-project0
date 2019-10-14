@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace RatStore.Data
 {
-    public class TextStore : IDataStore
+    public class TextStore //: IDataStore
     {
         string _path, _customersFile, _locationsFile, _productsFile, _componentsFile, _ordersFile;
         public List<Customer> Customers { get; private set; }
@@ -33,6 +33,11 @@ namespace RatStore.Data
             Orders = new List<Order>();
 
             LoadStores();
+        }
+
+        public void Save()
+        {
+            // Do nothing
         }
 
         public void Cleanup()
