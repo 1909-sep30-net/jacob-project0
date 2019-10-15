@@ -46,8 +46,12 @@ namespace RatStore.UI
 
         public static void PrintAvailableProducts(this Location location)
         {
-            Console.WriteLine($"The following products are available at store {location.LocationId}:");
             List<Product> availableProducts = location.GetAvailableProducts();
+            if (availableProducts.Count == 0)
+                Console.WriteLine("This store has no products to sell! Please type 'end' and try another store.");
+            else
+                Console.WriteLine($"The following products are available at store {location.LocationId}:");
+
             for (int i = 0; i < availableProducts.Count; ++i)
             {
                 Console.WriteLine($"{i}: {availableProducts[i].Name} -- @ {string.Format("{0:C}", availableProducts[i].Cost)}");

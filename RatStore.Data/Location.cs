@@ -59,7 +59,7 @@ namespace RatStore.Data
             foreach (ProductComponent comp in orderDetails.Product.Ingredients)
             {
                 Inventory inventoryItem = Inventory.Find(i => i.Component.ComponentId == comp.Component.ComponentId);
-                if (comp.Quantity * orderDetails.Quantity > inventoryItem.Quantity)
+                if (inventoryItem == null || comp.Quantity * orderDetails.Quantity > inventoryItem.Quantity)
                     return false;
             }
 
