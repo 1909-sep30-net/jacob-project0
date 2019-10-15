@@ -7,9 +7,9 @@ namespace RatStore.Data
 {
     public class Product
     {
-        public int Id { get; set; }
+        public int ProductId { get; set; }
 
-        public List<ProductComponent> Ingredients { get; set; }
+        virtual public List<ProductComponent> Ingredients { get; set; }
 
         public decimal Cost 
         { 
@@ -29,7 +29,7 @@ namespace RatStore.Data
 
         public Product()
         {
-            Id = -1;
+
         }
         public Product(string name, List<ProductComponent> ingredients)
         {

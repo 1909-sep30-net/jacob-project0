@@ -10,20 +10,19 @@ namespace RatStore.Data
 
         public string Address { get; set; }
 
-        public int Id { get; set; }
+        public int LocationId { get; set; }
 
-        public List<Inventory> Inventory { get; set; }
+        virtual public List<Inventory> Inventory { get; set; }
 
-        public List<Product> AvailableProducts { get; protected set; }
+        virtual public List<Product> AvailableProducts { get; protected set; }
 
-        public List<Order> OrderHistory { get; set; }
+        virtual public List<Order> OrderHistory { get; set; }
 
         public Location()
         {
             Inventory = new List<Inventory>();
             AvailableProducts = new List<Product>();
             OrderHistory = new List<Order>();
-            Id = -1;
         }
 
         public void TryChangeLocation(int targetStoreId)
@@ -31,7 +30,7 @@ namespace RatStore.Data
             Location temp = DataStore.TryGetLocationById(targetStoreId);
 
             Address = temp.Address;
-            Id = temp.Id;
+            LocationId = temp.LocationId;
             Inventory = temp.Inventory;
             AvailableProducts = temp.AvailableProducts;
             OrderHistory = temp.OrderHistory;
@@ -46,7 +45,8 @@ namespace RatStore.Data
         {
             foreach (ProductComponent comp in orderDetails.Product.Ingredients)
             {
-                if (comp.Quantity * orderDetails.Quantity > Inventory.Find(inventoryItem => inventoryItem.Component.Id == comp.Component.Id).Quantity)
+                Inventory inventoryItem = Inventory.Find(i => i.Component.ComponentId == comp.Component.ComponentId);
+                if (comp.Quantity * orderDetails.Quantity > inventoryItem.Quantity)
                     return false;
             }
 
@@ -65,43 +65,36 @@ namespace RatStore.Data
         #endregion
 
         #region Order Manipulation
-        public Order TryBuildOrder(Customer customer, List<OrderDetails> orderDetails)
+        public void SubmitOrder(Customer customer, List<OrderDetails> orderDetails)
         {
             if (!ValidateCustomer(customer))
                 throw new Exception("Order build failed: invalid customer");
             else if (!ValidateProductRequest(orderDetails))
                 throw new Exception("Order build failed: invalid products dictionary");
-            else
-            {
-                Order o = new Order()
-                {
-                    CustomerId = customer.Id,
-                    LocationId = Id,
-                    OrderDetails = orderDetails,
-                    //Id = DataStore.GetNextOrderId()
-                };
 
-                return o;
-            }
-        }
-        public void TrySubmitOrder(Order order)
-        {
-            if (!ValidateOrder(order))
+            Order o = new Order()
+            {
+                CustomerId = customer.CustomerId,
+                LocationId = LocationId,
+                OrderDetails = orderDetails,
+            };
+
+            if (!ValidateOrder(o))
                 throw new Exception("Invalid order");
 
-            if (!CanFulfillOrder(order))
+            if (!CanFulfillOrder(o))
                 throw new Exception("Inventory has insufficient components");
 
-            foreach (OrderDetails orderDetails in order.OrderDetails)
+            foreach (OrderDetails detail in orderDetails)
             {
-                foreach (ProductComponent component in orderDetails.Product.Ingredients)
+                foreach (ProductComponent component in detail.Product.Ingredients)
                 {
-                    Inventory inventoryItem = Inventory.Find(item => item.Component.Id == component.Component.Id);
-                    inventoryItem.Quantity -= component.Quantity;
+                    Inventory inventoryItem = Inventory.Find(item => item.Component.ComponentId == component.Component.ComponentId);
+                    inventoryItem.Quantity -= component.Quantity * detail.Quantity;
                 }
             }
 
-            DataStore.AddOrder(order);
+            DataStore.AddOrder(o);
             DataStore.Save();
         }
         #endregion

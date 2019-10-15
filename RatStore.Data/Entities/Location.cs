@@ -11,7 +11,7 @@ namespace RatStore.Data.Entities
             Order = new HashSet<Order>();
         }
 
-        public int Id { get; set; }
+        public int LocationId { get; set; }
         public string Address { get; set; }
 
         public virtual ICollection<Inventory> Inventory { get; set; }

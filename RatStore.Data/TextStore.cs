@@ -101,7 +101,7 @@ namespace RatStore.Data
                 MiddleName = middleName,
                 LastName = lastName,
                 PhoneNumber = phoneNumber,
-                Id = Customers.Count,
+                CustomerId = Customers.Count,
                 PreferredStoreId = 0
             };
 
@@ -121,7 +121,7 @@ namespace RatStore.Data
         {
             foreach (Customer c in Customers)
             {
-                if (c.Id == id)
+                if (c.CustomerId == id)
                     return c;
             }
 
@@ -146,7 +146,7 @@ namespace RatStore.Data
         {
             foreach (Location l in Locations)
             {
-                if (l.Id == id)
+                if (l.LocationId == id)
                     return l;
             }
 
@@ -213,7 +213,7 @@ namespace RatStore.Data
         {
             foreach (Order o in Orders)
             {
-                if (o.Id == id)
+                if (o.OrderId == id)
                     return o;
             }
 

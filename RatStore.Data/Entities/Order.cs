@@ -10,7 +10,7 @@ namespace RatStore.Data.Entities
             OrderDetails = new HashSet<OrderDetails>();
         }
 
-        public int Id { get; set; }
+        public int OrderId { get; set; }
         public DateTime? OrderDate { get; set; }
         public int? LocationId { get; set; }
         public int? CustomerId { get; set; }

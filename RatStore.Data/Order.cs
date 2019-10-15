@@ -9,13 +9,12 @@ namespace RatStore.Data
         public Order()
         {
             OrderDate = DateTime.Now;
-            Id = -1;
         }
         public int LocationId { get; set; }
         public int CustomerId { get; set; }
-        public int Id { get; set; }
+        public int OrderId { get; set; }
         public DateTime OrderDate { get; set; }
-        public List<OrderDetails> OrderDetails { get; set; }
+        virtual public List<OrderDetails> OrderDetails { get; set; }
 
         public decimal Const 
         { 

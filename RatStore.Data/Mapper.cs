@@ -12,7 +12,7 @@ namespace RatStore.Data
         {
             return new Data.Component
             {
-                Id = component.Id,
+                ComponentId = component.ComponentId,
                 Name = component.Name,
                 Cost = component.Cost ?? throw new ArgumentException("Argument cannot be null", nameof(component))
             };
@@ -21,7 +21,7 @@ namespace RatStore.Data
         {
             return new Entities.Component
             {
-                Id = component.Id,
+                ComponentId = component.ComponentId,
                 Name = component.Name,
                 Cost = component.Cost
             };
@@ -41,7 +41,7 @@ namespace RatStore.Data
         {
             return new Entities.ProductComponent
             {
-                Component = MapComponent(productComponent.Component),
+                ComponentId = productComponent.Component.ComponentId,
                 Quantity = productComponent.Quantity 
             };
         }
@@ -52,7 +52,7 @@ namespace RatStore.Data
         {
             return new Data.Product
             {
-                Id = product.Id,
+                ProductId = product.ProductId,
                 Name = product.Name,
                 Ingredients = product.ProductComponent.Select(MapProductComponent).ToList()
             };
@@ -61,7 +61,7 @@ namespace RatStore.Data
         {
             return new Entities.Product
             {
-                Id = product.Id,
+                ProductId = product.ProductId,
                 Name = product.Name,
                 ProductComponent = product.Ingredients.Select(MapProductComponent).ToList()
             };
@@ -73,7 +73,7 @@ namespace RatStore.Data
         {
             return new Customer
             {
-                Id = customer.Id,
+                CustomerId = customer.CustomerId,
                 FirstName = customer.FirstName,
                 MiddleName = customer.MiddleName,
                 LastName = customer.LastName,
@@ -84,7 +84,7 @@ namespace RatStore.Data
         {
             return new Entities.Customer
             {
-                Id = customer.Id,
+                CustomerId = customer.CustomerId,
                 FirstName = customer.FirstName,
                 MiddleName = customer.MiddleName,
                 LastName = customer.LastName,
@@ -106,7 +106,7 @@ namespace RatStore.Data
         {
             return new Entities.Inventory
             {
-                Component = MapComponent(inventoryItem.Component),
+                ComponentId = inventoryItem.Component.ComponentId,
                 Quantity = inventoryItem.Quantity
             };
         }
@@ -117,7 +117,7 @@ namespace RatStore.Data
         {
             return new Data.Location
             {
-                Id = location.Id,
+                LocationId = location.LocationId,
                 Address = location.Address,
                 Inventory = location.Inventory.Select(MapInventory).ToList()
             };
@@ -126,7 +126,7 @@ namespace RatStore.Data
         {
             return new Entities.Location
             {
-                Id = location.Id,
+                LocationId = location.LocationId,
                 Address = location.Address,
                 Inventory = location.Inventory.Select(MapInventory).ToList()
             };
@@ -146,7 +146,7 @@ namespace RatStore.Data
         {
             return new Entities.OrderDetails
             {
-                Product = MapProduct(orderDetails.Product),
+                ProductId = orderDetails.Product.ProductId,
                 Quantity = orderDetails.Quantity
             };
         }
@@ -157,7 +157,7 @@ namespace RatStore.Data
         {
             return new Data.Order
             {
-                Id = order.Id,
+                OrderId = order.OrderId,
                 CustomerId = order.CustomerId ?? throw new ArgumentException("Argument cannot be null", nameof(order)),
                 LocationId = order.LocationId ?? throw new ArgumentException("Argument cannot be null", nameof(order)),
                 OrderDetails = order.OrderDetails.Select(MapOrderDetails).ToList(),
@@ -168,7 +168,7 @@ namespace RatStore.Data
         {
             return new Entities.Order
             {
-                Id = order.Id,
+                OrderId = order.OrderId,
                 CustomerId = order.CustomerId,
                 LocationId = order.LocationId,
                 OrderDetails = order.OrderDetails.Select(MapOrderDetails).ToList(),

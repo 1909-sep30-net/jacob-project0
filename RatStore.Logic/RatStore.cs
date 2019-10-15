@@ -23,7 +23,7 @@ namespace RatStore.Logic
             {
                 // Add test location if none available
                 Address = "123 Test St, Everett, WA 98203";
-                Id = 0;
+                LocationId = 0;
                 DataStore.AddLocation(this);
                 DataStore.Save();
 
@@ -55,7 +55,7 @@ namespace RatStore.Logic
         #region Validation
         protected override bool ValidateLocation(Location location)
         {
-            if (location.Id == 0
+            if (location.LocationId == 0
                 || location.Address == "")
                 return false;
 
@@ -64,8 +64,7 @@ namespace RatStore.Logic
         protected override bool ValidateCustomer(Customer customer)
         {
             if (customer.FirstName == ""
-                || customer.LastName == ""
-                || customer.Id != -1)
+                || customer.LastName == "")
                 return false;
 
             return true;
@@ -83,10 +82,7 @@ namespace RatStore.Logic
         }
         protected override bool ValidateOrder(Order order)
         {
-            if (order.CustomerId == -1
-                || order.Id != -1
-                || order.OrderDetails.Count == 0
-                || order.LocationId == 0)
+            if (order.OrderDetails.Count == 0)
                 return false;
 
             return true;

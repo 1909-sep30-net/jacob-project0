@@ -11,7 +11,7 @@ namespace RatStore.Data.Entities
             ProductComponent = new HashSet<ProductComponent>();
         }
 
-        public int Id { get; set; }
+        public int ProductId { get; set; }
         public string Name { get; set; }
 
         public virtual ICollection<OrderDetails> OrderDetails { get; set; }

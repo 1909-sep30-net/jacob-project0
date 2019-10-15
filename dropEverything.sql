@@ -1,4 +1,4 @@
-/* Drops all tables in order */
+/* Drops all tables in proper order */
 
 DROP TABLE orderDetails;
 DROP TABLE [order];

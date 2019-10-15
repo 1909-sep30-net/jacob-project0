@@ -72,7 +72,20 @@ namespace RatStore.UI
                         continue;
                     }
 
-                    break;
+                    firstName = names[0];
+                    if (names.Length == 2)
+                    {
+                        middleName = "";
+                        lastName = names[1];
+                        break;
+                    }
+                    else if (names[2].ToCharArray()[0] != ' ')
+                    {
+                        middleName = names[1];
+                        lastName = names[2];
+                        break;
+                    }
+                    else Console.WriteLine("Please enter a valid name.");
                 }
 
                 while (true)
@@ -93,17 +106,7 @@ namespace RatStore.UI
                     break;
                 }
 
-                firstName = names[0];
-                if (names.Length == 2)
-                {
-                    middleName = "";
-                    lastName = names[1];
-                }
-                else
-                {
-                    middleName = names[1];
-                    lastName = names[2];
-                }
+                
 
                 try
                 {
@@ -162,7 +165,7 @@ namespace RatStore.UI
                             break;
                         else if (input[0].ToLower() == "buy")
                         {
-                            nav.CurrentStore.TrySubmitOrder(nav.CurrentStore.TryBuildOrder(nav.CurrentCustomer, nav.Cart));
+                            nav.CurrentStore.SubmitOrder(nav.CurrentCustomer, nav.Cart);
                             nav.CurrentStore.DataStore.Save();
 
                             Console.WriteLine("Order submitted!");
@@ -195,7 +198,7 @@ namespace RatStore.UI
             // order history for current customer
 
             Console.WriteLine("  What information would you like to retrieve?");
-            Console.WriteLine($"  1 - Inventory of store {nav.CurrentStore.Id}");
+            Console.WriteLine($"  1 - Inventory of store {nav.CurrentStore.LocationId}");
             Console.WriteLine($"  2 - Look up a past order by id");
             Console.WriteLine($"  3 - Get your order history");
             Console.WriteLine($"  0 - Cancel");
@@ -232,7 +235,7 @@ namespace RatStore.UI
                         break;
 
                     case '3':
-                        nav.CurrentStore.PrintCustomerOrderHistory(nav.CurrentCustomer.Id);
+                        nav.CurrentStore.PrintCustomerOrderHistory(nav.CurrentCustomer.CustomerId);
                         haveOption = true;
                         break;
 

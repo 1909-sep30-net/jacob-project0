@@ -47,7 +47,7 @@ namespace RatStore.Logic
             Product product = availableProducts[productId];
             OrderDetails cartItem;
 
-            if (!Cart.Exists(item => item.Product.Id == product.Id))
+            if (!Cart.Exists(item => item.Product.ProductId == product.ProductId))
             {
                 cartItem = new OrderDetails 
                 { 
@@ -59,7 +59,7 @@ namespace RatStore.Logic
             }
             else
             {
-                cartItem = Cart.Find(item => item.Product.Id == product.Id);
+                cartItem = Cart.Find(item => item.Product.ProductId == product.ProductId);
                 cartItem.Quantity += quantity;
             }
 
@@ -80,8 +80,7 @@ namespace RatStore.Logic
 
         public void SubmitCart()
         {
-            Order order = CurrentStore.TryBuildOrder(CurrentCustomer, Cart);
-            CurrentStore.TrySubmitOrder(order);
+            CurrentStore.SubmitOrder(CurrentCustomer, Cart);
             ClearCart();
         }
     }

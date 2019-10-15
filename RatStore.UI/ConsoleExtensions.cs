@@ -12,7 +12,7 @@ namespace RatStore.UI
         #region RatStore
         public static void PrintStoreInformation(this Location location)
         {
-            Console.WriteLine($"You are currently at store {location.Id}.");
+            Console.WriteLine($"You are currently at store {location.LocationId}.");
             Console.WriteLine($"This store has {location.AvailableProducts.Count} different products you can choose from:");
             PrintAvailableProducts(location);
         }
@@ -22,7 +22,7 @@ namespace RatStore.UI
             try
             {
                 Customer customer = location.DataStore.TryGetCustomerById(customerId);
-                Console.WriteLine($"Records for customer {customer.Id}:");
+                Console.WriteLine($"Records for customer {customer.CustomerId}:");
 
                 string middle = (customer.MiddleName != null && customer.MiddleName != "") ? customer.MiddleName + " " : "";
                 Console.WriteLine($"Name: {customer.FirstName} {middle}{customer.LastName}"); // Weird spacing on purpose
@@ -36,7 +36,7 @@ namespace RatStore.UI
 
         public static void PrintInventory(this Location location) //(of components)
         {
-            Console.WriteLine($"The following ingredients and stocks are available at store {location.Id}:");
+            Console.WriteLine($"The following ingredients and stocks are available at store {location.LocationId}:");
             foreach (Inventory inventoryItem in location.Inventory)
             {
                 Console.WriteLine($"   {inventoryItem.Component.Name} x {inventoryItem.Quantity}");
@@ -45,7 +45,7 @@ namespace RatStore.UI
 
         public static void PrintAvailableProducts(this Location location)
         {
-            Console.WriteLine($"The following products are available at store {location.Id}:");
+            Console.WriteLine($"The following products are available at store {location.LocationId}:");
             List<Product> availableProducts = location.GetAvailableProducts();
             for (int i = 0; i < availableProducts.Count; ++i)
             {
@@ -63,17 +63,17 @@ namespace RatStore.UI
             List<Location> allLocations = thisLocation.DataStore.GetAllLocations();
             for (int i = 0; i < allLocations.Count; ++i)
             {
-                if (allLocations[i].Id == thisLocation.Id)
-                    Console.WriteLine($"{i}: location {allLocations[i].Id} at {allLocations[i].Address} (this store)");
+                if (allLocations[i].LocationId == thisLocation.LocationId)
+                    Console.WriteLine($"{i}: location {allLocations[i].LocationId} at {allLocations[i].Address} (this store)");
                 else 
-                    Console.WriteLine($"{i}: location {allLocations[i].Id} at {allLocations[i].Address}");
+                    Console.WriteLine($"{i}: location {allLocations[i].LocationId} at {allLocations[i].Address}");
             }
         }
 
         public static void PrintOrderAtId(this Location location, int id)
         {
             Order order = location.DataStore.TryGetOrderById(id);
-            Console.WriteLine($"{order.Id}: {order.OrderDetails.Count} products ordered on {order.OrderDate.ToShortDateString()} for {order.Const}");
+            Console.WriteLine($"{order.OrderId}: {order.OrderDetails.Count} products ordered on {order.OrderDate.ToShortDateString()} for {order.Const}");
         }
 
         public static void PrintCustomerOrderHistory(this Location location, int customerId)
@@ -85,7 +85,7 @@ namespace RatStore.UI
             else
                 foreach (Order order in customerOrderHistory)
                 {
-                    Console.WriteLine($"{order.Id}: {order.OrderDetails.Count} products ordered on {order.OrderDate.ToShortDateString()} for {order.Const}");
+                    Console.WriteLine($"{order.OrderId}: {order.OrderDetails.Count} products ordered on {order.OrderDate.ToShortDateString()} for {order.Const}");
                 }
         }
 
@@ -96,7 +96,7 @@ namespace RatStore.UI
             else
                 foreach (Order order in thisLocation.OrderHistory)
                 {
-                    Console.WriteLine($"{order.Id}: {order.OrderDetails.Count} products ordered on {order.OrderDate.ToShortDateString()} for {order.Const}");
+                    Console.WriteLine($"{order.OrderId}: {order.OrderDetails.Count} products ordered on {order.OrderDate.ToShortDateString()} for {order.Const}");
                 }
         }
         #endregion

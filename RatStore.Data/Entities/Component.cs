@@ -11,7 +11,7 @@ namespace RatStore.Data.Entities
             ProductComponent = new HashSet<ProductComponent>();
         }
 
-        public int Id { get; set; }
+        public int ComponentId { get; set; }
         public string Name { get; set; }
         public decimal? Cost { get; set; }
 

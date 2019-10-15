@@ -6,7 +6,6 @@ namespace RatStore.Data
 {
     public class Inventory
     {
-        public int Id { get; set; }
         public Component Component { get; set; }
         public int Quantity { get; set; }
     }
