@@ -69,6 +69,7 @@ namespace RatStore.UI
                     if (names.Length < 2)
                     {
                         Console.WriteLine("Please enter at least your first and last name.");
+                        Console.WriteLine("");
                         continue;
                     }
 
@@ -85,7 +86,11 @@ namespace RatStore.UI
                         lastName = names[2];
                         break;
                     }
-                    else Console.WriteLine("Please enter a valid name.");
+                    else
+                    {
+                        Console.WriteLine("Please enter a valid name.");
+                        Console.WriteLine("");
+                    }
                 }
 
                 while (true)
@@ -100,6 +105,7 @@ namespace RatStore.UI
                     if (!Int64.TryParse(phoneNumber, out throwAway))
                     {
                         Console.WriteLine("Please enter numbers only.");
+                        Console.WriteLine("");
                         continue;
                     }
 
@@ -110,7 +116,7 @@ namespace RatStore.UI
 
                 try
                 {
-                    nav.CurrentCustomer = nav.CurrentStore.DataStore.TryGetCustomerByNameAndPhone(firstName, lastName, phoneNumber);
+                    nav.CurrentCustomer = nav.CurrentStore.DataStore.GetCustomerByNameAndPhone(firstName, lastName, phoneNumber);
                     Console.WriteLine($"Welcome back, {nav.CurrentCustomer.FirstName}!");
                 }
                 catch (Exception e)
@@ -126,10 +132,11 @@ namespace RatStore.UI
                     nav.CurrentStore.DataStore.AddCustomer(firstName, middleName, lastName, phoneNumber);
                     nav.CurrentStore.DataStore.Save();
 
-                    nav.CurrentCustomer = nav.CurrentStore.DataStore.TryGetCustomerByNameAndPhone(firstName, lastName, phoneNumber);
+                    nav.CurrentCustomer = nav.CurrentStore.DataStore.GetCustomerByNameAndPhone(firstName, lastName, phoneNumber);
 
                     Console.WriteLine("");
                     Console.WriteLine("New customer added.");
+                    Console.WriteLine("");
                 }
 
                 break;
@@ -144,6 +151,7 @@ namespace RatStore.UI
             Console.WriteLine("  2 - Get information");
             Console.WriteLine("  3 - Change locations");
             Console.WriteLine("  0 - Log out");
+            Console.WriteLine("");
         }
 
         static void Order(ref Navigator nav)
@@ -166,7 +174,6 @@ namespace RatStore.UI
                         else if (input[0].ToLower() == "buy")
                         {
                             nav.CurrentStore.SubmitOrder(nav.CurrentCustomer, nav.Cart);
-                            nav.CurrentStore.DataStore.Save();
 
                             Console.WriteLine("Order submitted!");
                             break;
@@ -185,7 +192,8 @@ namespace RatStore.UI
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine("Please enter a valid input.");
+                    Console.WriteLine($"Error: {e.Message}. Please enter a valid input.");
+                    Console.WriteLine("");
                 }
             }
         }
@@ -206,6 +214,8 @@ namespace RatStore.UI
             bool haveOption = false;
             while (!haveOption)
             {
+                haveOption = true;
+
                 char c = Console.ReadKey().KeyChar;
                 Console.WriteLine("");
 
@@ -213,7 +223,6 @@ namespace RatStore.UI
                 {
                     case '1':
                         nav.CurrentStore.PrintInventory();
-                        haveOption = true;
                         break;
 
                     case '2':
@@ -230,22 +239,20 @@ namespace RatStore.UI
                         {
                             Console.WriteLine("Please enter a valid order id.");
                         }
-
-                        haveOption = true;
                         break;
 
                     case '3':
                         nav.CurrentStore.PrintCustomerOrderHistory(nav.CurrentCustomer.CustomerId);
-                        haveOption = true;
                         break;
 
                     case '0':
                         Console.WriteLine("Canceling...");
-                        haveOption = true;
                         break;
 
                     default:
                         Console.WriteLine("Please choose a valid option.");
+                        Console.WriteLine("");
+                        haveOption = false;
                         break;
                 }
 
@@ -266,12 +273,13 @@ namespace RatStore.UI
                 try
                 {
                     int index = int.Parse(input);
-                    nav.CurrentStore.TryChangeLocation(index);
+                    nav.CurrentStore.ChangeLocation(index);
                     break;
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine("Please enter a valid id.");
+                    Console.WriteLine("");
                 }
             }
         }

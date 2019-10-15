@@ -8,6 +8,11 @@ namespace RatStore.Data
     public static class Mapper
     {
         #region Component
+        /// <summary>
+        /// Maps a db component to a business Component.
+        /// </summary>
+        /// <param name="component"></param>
+        /// <returns></returns>
         public static Data.Component MapComponent(Entities.Component component)
         {
             return new Data.Component
@@ -17,6 +22,11 @@ namespace RatStore.Data
                 Cost = component.Cost ?? throw new ArgumentException("Argument cannot be null", nameof(component))
             };
         }
+        /// <summary>
+        /// Maps a business component to a db Component.
+        /// </summary>
+        /// <param name="component"></param>
+        /// <returns></returns>
         public static Entities.Component MapComponent(Data.Component component)
         {
             return new Entities.Component
@@ -29,6 +39,11 @@ namespace RatStore.Data
         #endregion
 
         #region ProductComponent
+        /// <summary>
+        /// Maps a db ProductComponent to a business ProductComponent.
+        /// </summary>
+        /// <param name="productComponent"></param>
+        /// <returns></returns>
         public static Data.ProductComponent MapProductComponent(Entities.ProductComponent productComponent)
         {
             return new Data.ProductComponent
@@ -37,6 +52,11 @@ namespace RatStore.Data
                 Quantity = productComponent.Quantity ?? throw new ArgumentException("Argument cannot be null", nameof(productComponent))
             };
         }
+        /// <summary>
+        /// Maps a business ProductComponent to a db ProductComponent.
+        /// </summary>
+        /// <param name="productComponent"></param>
+        /// <returns></returns>
         public static Entities.ProductComponent MapProductComponent(Data.ProductComponent productComponent)
         {
             return new Entities.ProductComponent
@@ -48,6 +68,11 @@ namespace RatStore.Data
         #endregion
 
         #region Product
+        /// <summary>
+        /// Maps a business Product to a db Product.
+        /// </summary>
+        /// <param name="product"></param>
+        /// <returns></returns>
         public static Data.Product MapProduct(Entities.Product product)
         {
             return new Data.Product
@@ -57,6 +82,11 @@ namespace RatStore.Data
                 Ingredients = product.ProductComponent.Select(MapProductComponent).ToList()
             };
         }
+        /// <summary>
+        /// Maps a business Product to a db Product.
+        /// </summary>
+        /// <param name="product"></param>
+        /// <returns></returns>
         public static Entities.Product MapProduct(Data.Product product)
         {
             return new Entities.Product
@@ -69,6 +99,11 @@ namespace RatStore.Data
         #endregion
 
         #region Customer
+        /// <summary>
+        /// Maps a business Customer to a db Customer.
+        /// </summary>
+        /// <param name="customer"></param>
+        /// <returns></returns>
         public static Data.Customer MapCustomer(Entities.Customer customer)
         {
             return new Customer
@@ -80,6 +115,11 @@ namespace RatStore.Data
                 PhoneNumber = customer.PhoneNumber
             };
         }
+        /// <summary>
+        /// Maps a business Customer to a db Customer.
+        /// </summary>
+        /// <param name="customer"></param>
+        /// <returns></returns>
         public static Entities.Customer MapCustomer(Data.Customer customer)
         {
             return new Entities.Customer
@@ -94,6 +134,11 @@ namespace RatStore.Data
         #endregion
 
         #region Inventory
+        /// <summary>
+        /// Maps a business Inventory to a db Inventory.
+        /// </summary>
+        /// <param name="inventoryItem"></param>
+        /// <returns></returns>
         public static Data.Inventory MapInventory(Entities.Inventory inventoryItem)
         {
             return new Data.Inventory
@@ -102,6 +147,11 @@ namespace RatStore.Data
                 Quantity = inventoryItem.Quantity ?? throw new ArgumentException("Argument cannot be null", nameof(inventoryItem))
             };
         }
+        /// <summary>
+        /// Maps a business Inventory to a db Inventory.
+        /// </summary>
+        /// <param name="inventoryItem"></param>
+        /// <returns></returns>
         public static Entities.Inventory MapInventory(Data.Inventory inventoryItem)
         {
             return new Entities.Inventory
@@ -113,6 +163,11 @@ namespace RatStore.Data
         #endregion
 
         #region Location
+        /// <summary>
+        /// Maps a business Location to a db Location.
+        /// </summary>
+        /// <param name="location"></param>
+        /// <returns></returns>
         public static Data.Location MapLocation(Entities.Location location)
         {
             return new Data.Location
@@ -122,6 +177,11 @@ namespace RatStore.Data
                 Inventory = location.Inventory.Select(MapInventory).ToList()
             };
         }
+        /// <summary>
+        /// Maps a business Location to a db Location.
+        /// </summary>
+        /// <param name="location"></param>
+        /// <returns></returns>
         public static Entities.Location MapLocation(Data.Location location)
         {
             return new Entities.Location
@@ -134,6 +194,11 @@ namespace RatStore.Data
         #endregion
 
         #region OrderDetails
+        /// <summary>
+        /// Maps a business OrderDetails to a db OrderDetails.
+        /// </summary>
+        /// <param name="orderDetails"></param>
+        /// <returns></returns>
         public static Data.OrderDetails MapOrderDetails(Entities.OrderDetails orderDetails)
         {
             return new Data.OrderDetails
@@ -142,6 +207,11 @@ namespace RatStore.Data
                 Quantity = orderDetails.Quantity ?? throw new ArgumentException("Argument cannot be null", nameof(orderDetails))
             };
         }
+        /// <summary>
+        /// Maps a business OrderDetails to a db OrderDetails.
+        /// </summary>
+        /// <param name="orderDetails"></param>
+        /// <returns></returns>
         public static Entities.OrderDetails MapOrderDetails(Data.OrderDetails orderDetails)
         {
             return new Entities.OrderDetails
@@ -153,6 +223,11 @@ namespace RatStore.Data
         #endregion
 
         #region Order
+        /// <summary>
+        /// Maps a business Order to a db Order.
+        /// </summary>
+        /// <param name="order"></param>
+        /// <returns></returns>
         public static Data.Order MapOrder(Entities.Order order)
         {
             return new Data.Order
@@ -164,6 +239,11 @@ namespace RatStore.Data
                 OrderDate = order.OrderDate ?? throw new ArgumentException("Argument cannot be null", nameof(order))
             };
         }
+        /// <summary>
+        /// Maps a business Order to a db Order.
+        /// </summary>
+        /// <param name="order"></param>
+        /// <returns></returns>
         public static Entities.Order MapOrder(Data.Order order)
         {
             return new Entities.Order

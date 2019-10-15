@@ -25,9 +25,13 @@ namespace RatStore.Data
             OrderHistory = new List<Order>();
         }
 
-        public void TryChangeLocation(int targetStoreId)
+        /// <summary>
+        /// Changes the current store to the one indicated by the given id. Throws an exception if the id is not found.
+        /// </summary>
+        /// <param name="targetStoreId"></param>
+        public void ChangeLocation(int targetStoreId)
         {
-            Location temp = DataStore.TryGetLocationById(targetStoreId);
+            Location temp = DataStore.GetLocationById(targetStoreId);
 
             Address = temp.Address;
             LocationId = temp.LocationId;
@@ -37,10 +41,19 @@ namespace RatStore.Data
         }
 
         #region Inventory Management
+        /// <summary>
+        /// Aquires a list of products the store can provide at least one of based on its stock of components.
+        /// </summary>
+        /// <returns></returns>
         virtual public List<Product> GetAvailableProducts()
         {
             throw new Exception("No data for Location class!");
         }
+        /// <summary>
+        /// Checks whether the store's inventory can provide a certain product at a given quantitiy, stored in an OrderDetail.
+        /// </summary>
+        /// <param name="orderDetails"></param>
+        /// <returns></returns>
         virtual public bool CanFulfillProductQty(OrderDetails orderDetails)
         {
             foreach (ProductComponent comp in orderDetails.Product.Ingredients)
@@ -52,6 +65,11 @@ namespace RatStore.Data
 
             return true;
         }
+        /// <summary>
+        /// Checks that a store can fulfill an entire order.
+        /// </summary>
+        /// <param name="order"></param>
+        /// <returns>True ifthe store has required ingredients, false otherwise.</returns>
         public bool CanFulfillOrder(Order order)
         {
             foreach (OrderDetails orderDetails in order.OrderDetails)
@@ -65,6 +83,11 @@ namespace RatStore.Data
         #endregion
 
         #region Order Manipulation
+        /// <summary>
+        /// Takes a Customer and a list of OrderDetails, validates them, and submits the constructed Order to the database.
+        /// </summary>
+        /// <param name="customer"></param>
+        /// <param name="orderDetails"></param>
         public void SubmitOrder(Customer customer, List<OrderDetails> orderDetails)
         {
             if (!ValidateCustomer(customer))
@@ -80,7 +103,7 @@ namespace RatStore.Data
             };
 
             if (!ValidateOrder(o))
-                throw new Exception("Invalid order");
+                throw new Exception("Order must have at least one item");
 
             if (!CanFulfillOrder(o))
                 throw new Exception("Inventory has insufficient components");
@@ -91,6 +114,7 @@ namespace RatStore.Data
                 {
                     Inventory inventoryItem = Inventory.Find(item => item.Component.ComponentId == component.Component.ComponentId);
                     inventoryItem.Quantity -= component.Quantity * detail.Quantity;
+                    DataStore.UpdateLocation(this);
                 }
             }
 

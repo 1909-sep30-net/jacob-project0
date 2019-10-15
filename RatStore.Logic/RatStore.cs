@@ -17,7 +17,7 @@ namespace RatStore.Logic
 
             try
             {
-                TryChangeLocation(1);
+                ChangeLocation(1);
             }
             catch
             {
@@ -27,10 +27,14 @@ namespace RatStore.Logic
                 DataStore.AddLocation(this);
                 DataStore.Save();
 
-                TryChangeLocation(1);
+                ChangeLocation(1);
             }
         }
 
+        /// <summary>
+        /// Constructs a list of Products that the store can provide at least one of.
+        /// </summary>
+        /// <returns>List of Products</returns>
         public override List<Product> GetAvailableProducts()
         {
             List<Product> availableProducts = new List<Product>();
@@ -53,6 +57,11 @@ namespace RatStore.Logic
         }
 
         #region Validation
+        /// <summary>
+        /// Checks for invalid Id and invalid Address.
+        /// </summary>
+        /// <param name="location"></param>
+        /// <returns>True if valid, false otherwise.</returns>
         protected override bool ValidateLocation(Location location)
         {
             if (location.LocationId == 0
@@ -61,14 +70,25 @@ namespace RatStore.Logic
 
             return true;
         }
+        /// <summary>
+        /// Checks that the Customer has a first name, last name, and phone number.
+        /// </summary>
+        /// <param name="customer"></param>
+        /// <returns>True if valid, false otherwise.</returns>
         protected override bool ValidateCustomer(Customer customer)
         {
             if (customer.FirstName == ""
-                || customer.LastName == "")
+                || customer.LastName == ""
+                || customer.PhoneNumber == "")
                 return false;
 
             return true;
         }
+        /// <summary>
+        /// Checks that the list of OrderDetails has a valid product quantity (1 <= q <= 100).
+        /// </summary>
+        /// <param name="orderDetails"></param>
+        /// <returns>True if valid, false otherwise.</returns>
         protected override bool ValidateProductRequest(List<OrderDetails> orderDetails)
         {
             foreach (OrderDetails detail in orderDetails)
@@ -80,6 +100,11 @@ namespace RatStore.Logic
 
             return true;
         }
+        /// <summary>
+        /// Checks that the Order has at least one OrderDetail.
+        /// </summary>
+        /// <param name="order"></param>
+        /// <returns>True if valid, false otherwise.</returns>
         protected override bool ValidateOrder(Order order)
         {
             if (order.OrderDetails.Count == 0)

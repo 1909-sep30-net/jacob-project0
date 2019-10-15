@@ -10,6 +10,7 @@ namespace RatStore.Data
 {
     public class DatabaseStore : IDataStore
     {
+        #region Properties
         private DbContextOptions<jacobproject0Context> _options;
         private jacobproject0Context _context;
 
@@ -17,7 +18,9 @@ namespace RatStore.Data
         {
             builder.AddProvider(Console);
         }); */
+        #endregion
 
+        #region Startup and Shutdown
         public DatabaseStore()
         {
             _options = new DbContextOptionsBuilder<jacobproject0Context>()
@@ -27,6 +30,11 @@ namespace RatStore.Data
                 .Options;
 
             _context = new jacobproject0Context(_options);
+        }
+
+        ~DatabaseStore()
+        {
+            _context.Dispose();
         }
 
         public void Initialize()
@@ -42,8 +50,8 @@ namespace RatStore.Data
         public void Cleanup()
         {
             _context.SaveChanges();
-            _context.Dispose();
         }
+        #endregion
 
         #region Customer
         public void AddCustomer(Customer customer)
@@ -63,9 +71,9 @@ namespace RatStore.Data
 
             AddCustomer(customer);
         }
-        public Customer TryGetCustomerByNameAndPhone(string firstName, string lastName, string phoneNumber)
+        public Customer GetCustomerByNameAndPhone(string firstName, string lastName, string phoneNumber)
             => _context.Customer.Select(Mapper.MapCustomer).Where(c => c.FirstName == firstName && c.LastName == lastName && c.PhoneNumber == phoneNumber).FirstOrDefault();
-        public Customer TryGetCustomerById(int id)
+        public Customer GetCustomerById(int id)
             => Mapper.MapCustomer(_context.Customer.Find(id));
         public List<Customer> GetAllCustomers()
         {
@@ -94,7 +102,7 @@ namespace RatStore.Data
             Entities.Location newLocation = Mapper.MapLocation(location);
             _context.Location.Add(newLocation);
         }
-        public Location TryGetLocationById(int id)
+        public Location GetLocationById(int id)
             => Mapper.MapLocation(_context.Location
                 .Include(l => l.Inventory)
                 .ThenInclude(i => i.Component)
@@ -112,10 +120,13 @@ namespace RatStore.Data
         }
         public void UpdateLocation(Location location)
         {
-            Entities.Location currentLocation = _context.Location.Find(location.LocationId);
-            Entities.Location newLocation = Mapper.MapLocation(location);
+            Entities.Location currentLocation = _context.Location
+                .Include(l => l.Inventory).FirstOrDefault(l => l.LocationId == location.LocationId);
 
-            _context.Entry(currentLocation).CurrentValues.SetValues(newLocation);
+            foreach (Entities.Inventory item in currentLocation.Inventory)
+            {
+                item.Quantity = location.Inventory.Find(i => i.Component.ComponentId == item.ComponentId).Quantity;
+            }
         }
         public void RemoveLocation(int id)
         {
@@ -130,7 +141,7 @@ namespace RatStore.Data
             Entities.Product newProduct = Mapper.MapProduct(product);
             _context.Product.Add(newProduct);
         }
-        public Product TryGetProductByProductName(string name)
+        public Product GetProductByName(string name)
             => Mapper.MapProduct(_context.Product
                 .Include(p => p.ProductComponent)
                 .ThenInclude(pc => pc.Component)
@@ -164,7 +175,7 @@ namespace RatStore.Data
             Entities.Component newComponent = Mapper.MapComponent(component);
             _context.Component.Add(newComponent);
         }
-        public Component TryGetComponentByName(string name)
+        public Component GetComponentName(string name)
             => _context.Component.Select(Mapper.MapComponent).Where(c => c.Name == name).FirstOrDefault();
         public Component GetComponentById(int id)
             => Mapper.MapComponent(_context.Component.AsNoTracking().FirstOrDefault(c => c.ComponentId == id));
@@ -192,50 +203,56 @@ namespace RatStore.Data
         #region Order
         public void AddOrder(Order order)
             => _context.Order.Add(Mapper.MapOrder(order));
-        public Order TryGetOrderById(int id)
+        public Order GetOrderById(int id)
             => Mapper.MapOrder(_context.Order
                 .Include(o => o.Customer)
                 .Include(o => o.Location)
                 .Include(o => o.OrderDetails)
                 .ThenInclude(od => od.Product)
+                .ThenInclude(p => p.ProductComponent)
+                .ThenInclude(pc => pc.Component)
                 .First(o => o.OrderId == id));
         public List<Order> GetOrderHistory(int customerId = 0)
         {
             IQueryable<Entities.Order> orders = _context.Order
                     .AsNoTracking();
 
-            if (customerId == 0)
+            try
             {
-                return orders.Include(o => o.Location)
-                    .ThenInclude(l => l.Inventory)
-                    .Include(o => o.OrderDetails)
-                    .ThenInclude(od => od.Product)
-                    .Include(o => o.Customer)
-                    .Select(Mapper.MapOrder)
-                    .ToList();
-            }
-            else
-            {
-                List<Order> some = new List<Order>();
-
-                try
+                if (customerId == 0)
                 {
-                    some.Add(orders.Include(o => o.Location)
+                    return orders.Include(o => o.Location)
                         .ThenInclude(l => l.Inventory)
                         .Include(o => o.OrderDetails)
                         .ThenInclude(od => od.Product)
+                        .ThenInclude(p => p.ProductComponent)
+                        .ThenInclude(pc => pc.Component)
                         .Include(o => o.Customer)
                         .Select(Mapper.MapOrder)
-                        .First(o => o.CustomerId == customerId));
+                        .ToList();
                 }
-                catch (Exception e)
+                else
                 {
-
+                    return orders.Include(o => o.Location)
+                        .ThenInclude(l => l.Inventory)
+                        .Include(o => o.OrderDetails)
+                        .ThenInclude(od => od.Product)
+                        .ThenInclude(p => p.ProductComponent)
+                        .ThenInclude(pc => pc.Component)
+                        .Include(o => o.Customer)
+                        .Select(Mapper.MapOrder)
+                        .Where(o => o.CustomerId == customerId)
+                        .ToList();
                 }
-
-                return some;
             }
+            catch (Exception e)
+            {
+
+            }
+
+            return new List<Order>();
         }
+
         public void UpdateOrder(Order order)
         {
             Entities.Order currentOrder = _context.Order.Find(order.OrderId);

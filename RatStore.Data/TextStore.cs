@@ -9,13 +9,16 @@ namespace RatStore.Data
 {
     public class TextStore //: IDataStore
     {
+        #region Properties
         string _path, _customersFile, _locationsFile, _productsFile, _componentsFile, _ordersFile;
         public List<Customer> Customers { get; private set; }
         public List<Location> Locations { get; private set; }
         public List<Product> Products { get; private set; }
         public List<Component> Components { get; private set; }
         public List<Order> Orders { get; private set; }
+        #endregion
 
+        #region Startup and Shutdown
         public void Initialize()
         {
             _path = "C:\\Users\\Jacob Davis\\Revature\\jacob-project0\\";
@@ -44,6 +47,7 @@ namespace RatStore.Data
         {
             SaveStores();
         }
+        #endregion
 
         #region Storage
         public void LoadStores()

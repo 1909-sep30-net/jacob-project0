@@ -21,7 +21,7 @@ namespace RatStore.UI
         {
             try
             {
-                Customer customer = location.DataStore.TryGetCustomerById(customerId);
+                Customer customer = location.DataStore.GetCustomerById(customerId);
                 Console.WriteLine($"Records for customer {customer.CustomerId}:");
 
                 string middle = (customer.MiddleName != null && customer.MiddleName != "") ? customer.MiddleName + " " : "";
@@ -39,7 +39,8 @@ namespace RatStore.UI
             Console.WriteLine($"The following ingredients and stocks are available at store {location.LocationId}:");
             foreach (Inventory inventoryItem in location.Inventory)
             {
-                Console.WriteLine($"   {inventoryItem.Component.Name} x {inventoryItem.Quantity}");
+                if (inventoryItem.Quantity > 0)
+                    Console.WriteLine($"   {inventoryItem.Component.Name} x {inventoryItem.Quantity} @ {String.Format("{0:C}", inventoryItem.Component.Cost)}");
             }
         }
 
@@ -49,10 +50,10 @@ namespace RatStore.UI
             List<Product> availableProducts = location.GetAvailableProducts();
             for (int i = 0; i < availableProducts.Count; ++i)
             {
-                Console.WriteLine($"{i}: {availableProducts[i].Name} --");
+                Console.WriteLine($"{i}: {availableProducts[i].Name} -- @ {string.Format("{0:C}", availableProducts[i].Cost)}");
                 foreach (ProductComponent ingredient in availableProducts[i].Ingredients)
                 {
-                    Console.WriteLine($"    {ingredient.Component.Name} x {ingredient.Quantity}");
+                    Console.WriteLine($"    {ingredient.Component.Name} x {ingredient.Quantity} @ {String.Format("{0:C}", ingredient.Component.Cost)}");
                 }
             }
         }
@@ -64,28 +65,30 @@ namespace RatStore.UI
             for (int i = 0; i < allLocations.Count; ++i)
             {
                 if (allLocations[i].LocationId == thisLocation.LocationId)
-                    Console.WriteLine($"{i}: location {allLocations[i].LocationId} at {allLocations[i].Address} (this store)");
+                    Console.WriteLine($"{allLocations[i].LocationId}: location {allLocations[i].LocationId} at {allLocations[i].Address} (this store)");
                 else 
-                    Console.WriteLine($"{i}: location {allLocations[i].LocationId} at {allLocations[i].Address}");
+                    Console.WriteLine($"{allLocations[i].LocationId}: location {allLocations[i].LocationId} at {allLocations[i].Address}");
             }
         }
 
         public static void PrintOrderAtId(this Location location, int id)
         {
-            Order order = location.DataStore.TryGetOrderById(id);
-            Console.WriteLine($"{order.OrderId}: {order.OrderDetails.Count} products ordered on {order.OrderDate.ToShortDateString()} for {order.Const}");
+            Order order = location.DataStore.GetOrderById(id);
+            Console.WriteLine($"{order.OrderId}: {order.Count} {(order.Count > 1 ? "products" : "product")} ordered " +
+                $"on {order.OrderDate.ToShortDateString()} for {String.Format("{0:C}", order.Cost)}.");
         }
 
         public static void PrintCustomerOrderHistory(this Location location, int customerId)
         {
-            List<Order> customerOrderHistory = location.DataStore.GetOrderHistory(customerId).ToList();
+            List<Order> customerOrderHistory = location.DataStore.GetOrderHistory(customerId);
 
             if (customerOrderHistory.Count == 0)
                 Console.WriteLine("Order history is empty for this customer.");
             else
                 foreach (Order order in customerOrderHistory)
                 {
-                    Console.WriteLine($"{order.OrderId}: {order.OrderDetails.Count} products ordered on {order.OrderDate.ToShortDateString()} for {order.Const}");
+                    Console.WriteLine($"{order.OrderId}: {order.Count} {(order.Count > 1 ? "products" : "product")} ordered " +
+                        $"on {order.OrderDate.ToShortDateString()} for {String.Format("{0:C}", order.Cost)}.");
                 }
         }
 
@@ -96,7 +99,8 @@ namespace RatStore.UI
             else
                 foreach (Order order in thisLocation.OrderHistory)
                 {
-                    Console.WriteLine($"{order.OrderId}: {order.OrderDetails.Count} products ordered on {order.OrderDate.ToShortDateString()} for {order.Const}");
+                    Console.WriteLine($"{order.OrderId}: {order.Count} {(order.Count > 1 ? "products" : "product")} ordered " +
+                        $"on {order.OrderDate.ToShortDateString()} for {String.Format("{0:C}", order.Cost)}.");
                 }
         }
         #endregion

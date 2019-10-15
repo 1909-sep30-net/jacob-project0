@@ -33,11 +33,20 @@ namespace RatStore.Logic
             }
         }
 
-        public void TryGoToStore(int targetStoreId)
+        /// <summary>
+        /// Changes the CurrentStore to the Location with the given Id.
+        /// </summary>
+        /// <param name="targetStoreId"></param>
+        public void GoToStore(int targetStoreId)
         {
-            CurrentStore.TryChangeLocation(targetStoreId);
+            CurrentStore.ChangeLocation(targetStoreId);
         }
 
+        /// <summary>
+        /// Verifies that the CurrentStore can fulfill the product request and then adds it to the Cart.
+        /// </summary>
+        /// <param name="productId"></param>
+        /// <param name="quantity"></param>
         public void AddProductToCart(int productId, int quantity)
         {
             List<Product> availableProducts = CurrentStore.GetAvailableProducts();
@@ -73,11 +82,17 @@ namespace RatStore.Logic
             }
         }
 
+        /// <summary>
+        /// Removes all items from the Cart.
+        /// </summary>
         public void ClearCart()
         {
             Cart.Clear();
         }
 
+        /// <summary>
+        /// Passes the Cart - a list of OrderDetails - to the CurrentStore for submission.
+        /// </summary>
         public void SubmitCart()
         {
             CurrentStore.SubmitOrder(CurrentCustomer, Cart);

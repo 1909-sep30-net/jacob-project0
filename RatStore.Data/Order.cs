@@ -16,7 +16,10 @@ namespace RatStore.Data
         public DateTime OrderDate { get; set; }
         virtual public List<OrderDetails> OrderDetails { get; set; }
 
-        public decimal Const 
+        /// <summary>
+        /// Adds up the cost of the Products referenced in the OrderDetails.
+        /// </summary>
+        public decimal Cost 
         { 
             get
             {
@@ -27,6 +30,20 @@ namespace RatStore.Data
                 }
 
                 return sum;
+            }
+        }
+
+        public int Count
+        {
+            get
+            {
+                int count = 0;
+                foreach (OrderDetails orderDetails in OrderDetails)
+                {
+                    count += orderDetails.Quantity;
+                }
+
+                return count;
             }
         }
     }

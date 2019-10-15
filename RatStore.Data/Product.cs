@@ -11,6 +11,9 @@ namespace RatStore.Data
 
         virtual public List<ProductComponent> Ingredients { get; set; }
 
+        /// <summary>
+        /// Adds up the cost of the required ProductComponents in Ingredients.
+        /// </summary>
         public decimal Cost 
         { 
             get
