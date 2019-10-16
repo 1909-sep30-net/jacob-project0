@@ -42,6 +42,18 @@ namespace RatStore.Data
             
         }
 
+        public bool Connected()
+        {
+            try
+            {
+                return _context.Database.CanConnect();
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         public void Save()
         {
             _context.SaveChanges();
@@ -234,7 +246,7 @@ namespace RatStore.Data
             Entities.Component newComponent = Mapper.MapComponent(component);
             _context.Component.Add(newComponent);
         }
-        public Component GetComponentName(string name)
+        public Component GetComponentByName(string name)
             => _context.Component.Select(Mapper.MapComponent).Where(c => c.Name == name).FirstOrDefault();
         public Component GetComponentById(int id)
             => Mapper.MapComponent(_context.Component.AsNoTracking().FirstOrDefault(c => c.ComponentId == id));

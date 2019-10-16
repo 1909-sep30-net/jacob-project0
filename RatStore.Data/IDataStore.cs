@@ -12,6 +12,11 @@ namespace RatStore.Data
         /// </summary>
         void Initialize();
         /// <summary>
+        /// Returns true if the database is connected.
+        /// </summary>
+        /// <returns></returns>
+        bool Connected();
+        /// <summary>
         /// Save changes to the data store.
         /// </summary>
         void Save();
@@ -135,7 +140,7 @@ namespace RatStore.Data
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        Component GetComponentName(string name);
+        Component GetComponentByName(string name);
         /// <summary>
         /// Gets the Component with the matching Id from the data store.
         /// </summary>

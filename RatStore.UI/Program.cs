@@ -171,10 +171,13 @@ namespace RatStore.UI
                     if (input.Length >= 1)
                     {
                         if (input[0].ToLower() == "end")
+                        {
+                            nav.ClearCart();
                             break;
+                        }
                         else if (input[0].ToLower() == "buy")
                         {
-                            nav.CurrentStore.SubmitOrder(nav.CurrentCustomer, nav.Cart);
+                            nav.SubmitCart();
 
                             Console.WriteLine("Order submitted!");
                             break;

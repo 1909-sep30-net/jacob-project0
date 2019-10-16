@@ -9,10 +9,10 @@ namespace RatStore.Logic
     {
         public RatStore()
         {
-            //TODO: text mode vs sql mode
-
-            //DataStore = new TextStore();
             DataStore = new DatabaseStore();
+            if (!DataStore.Connected())
+                DataStore = new TextStore();
+
             DataStore.Initialize();
 
             try
@@ -23,7 +23,7 @@ namespace RatStore.Logic
             {
                 // Add test location if none available
                 Address = "123 Test St, Everett, WA 98203";
-                LocationId = 0;
+                LocationId = 1;
                 DataStore.AddLocation(this);
                 DataStore.Save();
 

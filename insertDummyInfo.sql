@@ -14,6 +14,8 @@ INSERT INTO Product
 ('Big Rat')
 , ('Small Rat')
 , ('Micro Rat')
+, ('Rat Food, 1lb')
+, ('Rat Cage, Small')
 , ('Rat Package Deal')
 , ('Rat Soup, 5lb');
 
@@ -35,13 +37,15 @@ INSERT INTO ProductComponent
 (1, 1, 1)
 , (2, 2, 1)
 , (3, 3, 1)
+, (4, 4, 1)
+, (5, 5, 1)
 /*Rat Package Deal is a Micro Rat, two pounds of food, and a cage */
-, (4, 3, 1)
-, (4, 4, 2)
-, (4, 5, 1)
+, (6, 3, 1)
+, (6, 4, 2)
+, (6, 5, 1)
 /* Rat Soup is three Small Rats and a pound of food */
-, (5, 2, 3)
-, (5, 4, 1);
+, (7, 2, 3)
+, (7, 4, 1);
 
 INSERT INTO Inventory
 (locationId, componentId, quantity) VALUES

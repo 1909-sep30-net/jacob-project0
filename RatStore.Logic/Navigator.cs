@@ -8,15 +8,14 @@ namespace RatStore.Logic
 {
     public class Navigator
     {
+        List<OrderDetails> _cart;
         public RatStore CurrentStore { get; set; }
 
         public Customer CurrentCustomer { get; set; }
 
-        public List<OrderDetails> Cart { get; set; }
-
         public Navigator()
         {
-            Cart = new List<OrderDetails>();
+            _cart = new List<OrderDetails>();
         }
 
         public decimal Subtotal
@@ -24,7 +23,7 @@ namespace RatStore.Logic
             get
             {
                 decimal sum = 0;
-                foreach (OrderDetails cartItem in Cart)
+                foreach (OrderDetails cartItem in _cart)
                 {
                     sum += cartItem.Product.Cost * cartItem.Quantity;
                 }
@@ -56,7 +55,7 @@ namespace RatStore.Logic
             Product product = availableProducts[productId];
             OrderDetails cartItem;
 
-            if (!Cart.Exists(item => item.Product.ProductId == product.ProductId))
+            if (!_cart.Exists(item => item.Product.ProductId == product.ProductId))
             {
                 cartItem = new OrderDetails 
                 { 
@@ -64,11 +63,11 @@ namespace RatStore.Logic
                     Quantity = quantity 
                 };
 
-                Cart.Add(cartItem);
+                _cart.Add(cartItem);
             }
             else
             {
-                cartItem = Cart.Find(item => item.Product.ProductId == product.ProductId);
+                cartItem = _cart.Find(item => item.Product.ProductId == product.ProductId);
                 cartItem.Quantity += quantity;
             }
 
@@ -76,7 +75,7 @@ namespace RatStore.Logic
             {
                 cartItem.Quantity -= quantity;
                 if (cartItem.Quantity == 0)
-                    Cart.Remove(cartItem);
+                    _cart.Remove(cartItem);
 
                 throw new Exception($"Inventory cannot fulfill quantity: {product.Name} x {quantity}");
             }
@@ -87,7 +86,7 @@ namespace RatStore.Logic
         /// </summary>
         public void ClearCart()
         {
-            Cart.Clear();
+            _cart.Clear();
         }
 
         /// <summary>
@@ -95,7 +94,7 @@ namespace RatStore.Logic
         /// </summary>
         public void SubmitCart()
         {
-            CurrentStore.SubmitOrder(CurrentCustomer, Cart);
+            CurrentStore.SubmitOrder(CurrentCustomer, _cart);
             ClearCart();
         }
     }
