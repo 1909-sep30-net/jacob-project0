@@ -80,6 +80,10 @@ namespace RatStore.UI
             Order order = location.DataStore.GetOrderById(id);
             Console.WriteLine($"{order.OrderId}: {order.Count} {(order.Count > 1 ? "products" : "product")} ordered " +
                 $"on {order.OrderDate.ToShortDateString()} for {String.Format("{0:C}", order.Cost)}.");
+            foreach (OrderDetails orderDetails in order.OrderDetails)
+            {
+                Console.WriteLine($"  {orderDetails.Product.Name} x {orderDetails.Quantity} @ {orderDetails.Product.Cost}");
+            }
         }
 
         public static void PrintCustomerOrderHistory(this Location location, int customerId)
@@ -91,8 +95,7 @@ namespace RatStore.UI
             else
                 foreach (Order order in customerOrderHistory)
                 {
-                    Console.WriteLine($"{order.OrderId}: {order.Count} {(order.Count > 1 ? "products" : "product")} ordered " +
-                        $"on {order.OrderDate.ToShortDateString()} for {String.Format("{0:C}", order.Cost)}.");
+                    PrintOrderAtId(location, order.OrderId);
                 }
         }
 

@@ -62,7 +62,7 @@ namespace RatStore.Logic
         /// </summary>
         /// <param name="location"></param>
         /// <returns>True if valid, false otherwise.</returns>
-        protected override bool ValidateLocation(Location location)
+        public override bool ValidateLocation(Location location)
         {
             if (location.LocationId == 0
                 || location.Address == "")
@@ -75,7 +75,7 @@ namespace RatStore.Logic
         /// </summary>
         /// <param name="customer"></param>
         /// <returns>True if valid, false otherwise.</returns>
-        protected override bool ValidateCustomer(Customer customer)
+        public override bool ValidateCustomer(Customer customer)
         {
             if (customer.FirstName == ""
                 || customer.LastName == ""
@@ -89,8 +89,11 @@ namespace RatStore.Logic
         /// </summary>
         /// <param name="orderDetails"></param>
         /// <returns>True if valid, false otherwise.</returns>
-        protected override bool ValidateProductRequest(List<OrderDetails> orderDetails)
+        public override bool ValidateProductRequest(List<OrderDetails> orderDetails)
         {
+            if (orderDetails.Count == 0)
+                return false;
+
             foreach (OrderDetails detail in orderDetails)
             {
                 if (detail.Quantity > 100
@@ -105,9 +108,11 @@ namespace RatStore.Logic
         /// </summary>
         /// <param name="order"></param>
         /// <returns>True if valid, false otherwise.</returns>
-        protected override bool ValidateOrder(Order order)
+        public override bool ValidateOrder(Order order)
         {
-            if (order.OrderDetails.Count == 0)
+            if (order == null
+                || order.OrderDetails == null
+                || order.OrderDetails.Count == 0)
                 return false;
 
             return true;

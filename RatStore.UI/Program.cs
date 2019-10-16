@@ -145,6 +145,7 @@ namespace RatStore.UI
 
         static void MainMenu(Navigator nav)
         {
+            Console.WriteLine("");
             Console.WriteLine($"  Logged in as {nav.CurrentCustomer.FirstName} {nav.CurrentCustomer.LastName}.");
             Console.WriteLine("  Main Menu:");
             Console.WriteLine("  1 - Order from this store");

@@ -124,19 +124,19 @@ namespace RatStore.Data
         #endregion
 
         #region Validation
-        virtual protected bool ValidateLocation(Location location)
+        virtual public bool ValidateLocation(Location location)
         {
             return true;
         }
-        virtual protected bool ValidateCustomer(Customer customer)
+        virtual public bool ValidateCustomer(Customer customer)
         {
             return true;
         }
-        virtual protected bool ValidateProductRequest(List<OrderDetails> products)
+        virtual public bool ValidateProductRequest(List<OrderDetails> products)
         {
             return true;
         }
-        virtual protected bool ValidateOrder(Order order)
+        virtual public bool ValidateOrder(Order order)
         {
             return true;
         }

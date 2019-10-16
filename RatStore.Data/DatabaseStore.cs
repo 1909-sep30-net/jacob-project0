@@ -4,7 +4,8 @@ using System.Text;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using RatStore.Data.Entities;
-using Microsoft.Extensions.Logging;
+using Serilog;
+using Serilog.Sinks.SystemConsole;
 
 namespace RatStore.Data
 {
@@ -13,11 +14,6 @@ namespace RatStore.Data
         #region Properties
         private DbContextOptions<jacobproject0Context> _options;
         private jacobproject0Context _context;
-
-        /*public static readonly ILoggerFactory AppLoggerFactory = LoggerFactory.Create(builder =>
-        {
-            builder.AddProvider(Console);
-        }); */
         #endregion
 
         #region Startup and Shutdown
@@ -26,10 +22,14 @@ namespace RatStore.Data
             _options = new DbContextOptionsBuilder<jacobproject0Context>()
                 .UseSqlServer(SecretCode.Sauce)
                 .EnableSensitiveDataLogging()
-                //.UseLoggerFactory(AppLoggerFactory)
                 .Options;
 
             _context = new jacobproject0Context(_options);
+
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .WriteTo.Console()
+                .CreateLogger();
         }
 
         ~DatabaseStore()
@@ -85,14 +85,34 @@ namespace RatStore.Data
         public void UpdateCustomer(Customer customer)
         {
             Entities.Customer currentCustomer = _context.Customer.Find(customer.CustomerId);
-            Entities.Customer newCustomer = Mapper.MapCustomer(customer);
 
-            _context.Entry(currentCustomer).CurrentValues.SetValues(newCustomer);
+            if (currentCustomer != null)
+            {
+                Entities.Customer newCustomer = Mapper.MapCustomer(customer);
+
+                _context.Entry(currentCustomer).CurrentValues.SetValues(newCustomer);
+
+                Log.Information($"Customer with Id {customer.CustomerId} has been updated.");
+            }
+            else
+            {
+                Log.Error($"Customer with Id {customer.CustomerId} could not be updated because it does not exist.");
+            }
         }
         public void RemoveCustomer(int id)
         {
             Entities.Customer customer = _context.Customer.Find(id);
-            _context.Customer.Remove(customer);
+
+            if (customer != null)
+            {
+                _context.Customer.Remove(customer);
+
+                Log.Information($"Customer with Id {customer.CustomerId} has been deleted.");
+            }
+            else
+            {
+                Log.Error($"Customer with Id {customer.CustomerId} could not be deleted because it does not exist.");
+            }
         }
         #endregion
 
@@ -123,15 +143,34 @@ namespace RatStore.Data
             Entities.Location currentLocation = _context.Location
                 .Include(l => l.Inventory).FirstOrDefault(l => l.LocationId == location.LocationId);
 
-            foreach (Entities.Inventory item in currentLocation.Inventory)
+            if (currentLocation != null)
             {
-                item.Quantity = location.Inventory.Find(i => i.Component.ComponentId == item.ComponentId).Quantity;
+                foreach (Entities.Inventory item in currentLocation.Inventory)
+                {
+                    item.Quantity = location.Inventory.Find(i => i.Component.ComponentId == item.ComponentId).Quantity;
+                }
+
+                Log.Information($"Location with Id {location.LocationId} has been updated.");
+            }
+            else
+            {
+                Log.Error($"Location with Id {location.LocationId} could not be updated because it does not exist.");
             }
         }
         public void RemoveLocation(int id)
         {
             Entities.Location location = _context.Location.Find(id);
-            _context.Location.Remove(location);
+
+            if (location != null)
+            {
+                _context.Location.Remove(location);
+
+                Log.Information($"Location with Id {location.LocationId} has been deleted.");
+            }
+            else
+            {
+                Log.Error($"Location with Id {location.LocationId} could not be removed because it does not exist.");
+            }
         }
         #endregion
 
@@ -158,14 +197,34 @@ namespace RatStore.Data
         public void UpdateProduct(Product product)
         {
             Entities.Product currentProduct = _context.Product.Find(product.ProductId);
-            Entities.Product newProduct = Mapper.MapProduct(product);
 
-            _context.Entry(currentProduct).CurrentValues.SetValues(newProduct);
+            if (currentProduct != null)
+            {
+                Entities.Product newProduct = Mapper.MapProduct(product);
+
+                _context.Entry(currentProduct).CurrentValues.SetValues(newProduct);
+
+                Log.Information($"Product with Id {product.ProductId} has been updated.");
+            }
+            else
+            {
+                Log.Error($"Product with Id {product.ProductId} could not be updated because it does not exist.");
+            }
         }
         public void RemoveProduct(int id)
         {
             Entities.Product product = _context.Product.Find(id);
-            _context.Product.Remove(product);
+
+            if (product != null)
+            {
+                _context.Product.Remove(product);
+
+                Log.Information($"Product with Id {product.ProductId} has been deleted.");
+            }
+            else
+            {
+                Log.Error($"Product with Id {id} could not be removed because it does not exist.");
+            }
         }
         #endregion
 
@@ -189,14 +248,34 @@ namespace RatStore.Data
         public void UpdateComponent(Component component)
         {
             Entities.Component currentComponent = _context.Component.AsNoTracking().FirstOrDefault(c => c.ComponentId == component.ComponentId);
-            Entities.Component newComponent = Mapper.MapComponent(component);
 
-            _context.Entry(currentComponent).CurrentValues.SetValues(newComponent);
+            if (currentComponent != null)
+            {
+                Entities.Component newComponent = Mapper.MapComponent(component);
+
+                _context.Entry(currentComponent).CurrentValues.SetValues(newComponent);
+
+                Log.Information($"Component with Id {component.ComponentId} has been updated.");
+            }
+            else
+            {
+                Log.Error($"Component with Id {component.ComponentId} could not be updated because it does not exist.");
+            }
         }
         public void RemoveComponent(int id)
         {
             Entities.Component component = _context.Component.FirstOrDefault(c => c.ComponentId == id);
-            _context.Component.Remove(component);
+
+            if (component != null)
+            {
+                _context.Component.Remove(component);
+
+                Log.Information($"Component with Id {component.ComponentId} has been removed.");
+            }
+            else
+            {
+                Log.Error($"Component with Id {component.ComponentId} could not be removed because it does not exist.");
+            }
         }
         #endregion
 
@@ -247,7 +326,10 @@ namespace RatStore.Data
             }
             catch (Exception e)
             {
-
+                if (customerId != 0)
+                    Log.Error($"Order history for customer with Id {customerId} could not be retrieved.");
+                else
+                    Log.Error($"Order history could not be accessed.");
             }
 
             return new List<Order>();
@@ -256,14 +338,33 @@ namespace RatStore.Data
         public void UpdateOrder(Order order)
         {
             Entities.Order currentOrder = _context.Order.Find(order.OrderId);
-            Entities.Order newOrder = Mapper.MapOrder(order);
 
-            _context.Entry(currentOrder).CurrentValues.SetValues(newOrder);
+            if (order != null)
+            {
+                Entities.Order newOrder = Mapper.MapOrder(order);
+
+                _context.Entry(currentOrder).CurrentValues.SetValues(newOrder);
+
+                Log.Information($"Order with Id {order.OrderId} has been updated.");
+            }
+            else
+            {
+                Log.Debug($"Order with Id {order.OrderId} could not be updated because it does not exist.");
+            }
         }
         public void RemoveOrder(int id)
         {
             Entities.Order customer = _context.Order.Find(id);
-            _context.Order.Remove(customer);
+
+            if (customer != null)
+            {
+                _context.Order.Remove(customer);
+                Log.Information($"Order with Id {id} has been removed.");
+            }
+            else
+            {
+                Log.Information($"Order with id {id} could not be removed because it does not exist.");
+            }
         }
         #endregion
     }
